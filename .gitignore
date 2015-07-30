@@ -1,0 +1,16 @@
+# Matlab git ignore
+
+desktop.ini
+
+*.asv
+
+*.m~
+
+*.mex*
+
+slprj/
+
+.DS_STORE
+
+Icon?
+
