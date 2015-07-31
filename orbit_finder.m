@@ -36,13 +36,13 @@ traj_fig= figure(1);
 
 % moon bounded orbit
 % earth_x0 = [1/constants.l_scale*(35786+6378.137) - constants.mu;0;0;3.07*1/constants.v_scale];
-% moon_x0 = [1.02;0;0;0.75];
-earth_x0 = [0.75;0;0;0.2883];
+moon_x0 = [1.05;0;0;0.35];
+% earth_x0 = [0.75;0;0;0.2883];
 % find poincare section of moon orbit over many periods
 % plot over a long timespan and save all the x axis crossings
 options_cross = odeset('RelTol',constants.RelTol,'AbsTol',constants.AbsTol,'Events',@events_xcross_nostop);
-[t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 10],earth_x0,options_cross) ;
-plot_trajectories(t, state, energyconst(earth_x0',constants.mu), traj_fig, constants)
+[t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 20],moon_x0,options_cross) ;
+plot_trajectories(t, state, energyconst(moon_x0',constants.mu), traj_fig, constants)
 % load L1 reachable set
 % load ./u=01/l1_reach_second
 % load ./u=01/l1_reach_first.mat

@@ -46,8 +46,8 @@ r2=((X + mu-1).^2+Y.^2 ).^(1/2);
 C_grid=2*((1/2)*(X.^2 + Y.^2)+(1-mu)./r1+mu./r2); % jacobi constant
 E_grid = C_grid/-2;
 
-primary_1 = [-mu 0 0];
-primary_2 = [1-mu 0 0];
+primary_1 = l_scale*[-mu 0 0];
+primary_2 = l_scale* [1-mu 0 0];
 
 set(0,'CurrentFigure',fig_handle)
 hold all
