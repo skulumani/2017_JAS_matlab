@@ -64,7 +64,7 @@ for ii = 1:num_theta % loop over theta angles (poincare directions)
     set(0,'CurrentFigure',traj_fig1);
     plot(state(:,1),state(:,2),'r')
     set(0,'CurrentFigure',poincare_fig);
-    plot(state(end,1),state(end,3),'r.')
+    plot(state(end,1),state(end,3),'r.','Markersize',20)
     
 end
 
@@ -89,7 +89,7 @@ line([0.8352 1.1],[0 0],'Linewidth',4,'Color','k')
 
 % plot the x axis crossing for the Moon bounded orbit
 set(0,'CurrentFigure',poincare_fig);
-plot(cross_state(:,1),cross_state(:,3),'b.')
+plot(cross_state(:,1),cross_state(:,3),'b.','Markersize',20)
 %% load the manifold from the periodic orbit
 load './u=05/l1_manifold.mat'
 crossing_sel = 3;

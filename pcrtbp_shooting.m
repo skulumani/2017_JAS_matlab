@@ -20,7 +20,7 @@ constants.num_steps = num_steps;
 % constants.center_vec = L_points(1,:);
 constants.center_vec = [-constants.mu 0];
 
-constants.alpha_d = 180*pi/180 ; % angle that defines the poincare section
+constants.alpha_d = 0*pi/180 ; % angle that defines the poincare section
 
 % generate an initial periodic orbit
 
@@ -34,14 +34,14 @@ constants.alpha_d = 180*pi/180 ; % angle that defines the poincare section
 % iterations from um = 0.25
 % x0_i = [0.843741045660152   0.000014266827793   0.056397653670216  -0.066280767615112];
 
-% x0_i = [0.815614054266804 0 0 0.192227407664904]; % initial condition on periodic orbit
-% T_i = 1.407478324303006; % half period of initial periodic orbit
+x0_i = [0.815614054266804 0 0 0.192227407664904]; % initial condition on periodic orbit
+T_i = 1.407478324303006; % half period of initial periodic orbit
 
 % x0_i = [0.097188181581686 0 0 3.001035378159969]; % earth geostationary 1
 % T_i = 0.135502731929080*3;
 
-x0_i = [  -0.147950391731881 -0.000124384449490 0.083507353750893 -2.447933841083721]; % earth geostationary 2
-T_i = 0.139779243787031*4;
+% x0_i = [  -0.147950391731881 -0.000124384449490 0.083507353750893 -2.447933841083721]; % earth geostationary 2
+% T_i = 0.139779243787031*4;
 
 % generate a target periodic orbit
 x0_t = [0.813217758536162 0 0 0.219019807293238];
@@ -67,12 +67,12 @@ h0_i = 0.1*ones(1,4);
 % h0 = [0.105164167219524 0.014149650814560  -0.032881244319099   0.000011463431402];
 
 % % from periodic orbit
-% h0 = [0.01042140861866;... % hr_x
-%     0.005574701108068;... % hr_y
-%     0.002230056745460;... % hv_x
-%     -0.001157375275785]; % hv_y
+h0 = [0.01042140861866;... % hr_x
+    0.005574701108068;... % hr_y
+    0.002230056745460;... % hv_x
+    -0.001157375275785]; % hv_y
 
-h0 =    [0.004877935688997 -0.000092310983385 -0.000024030533584 0.000099994046804]; % earth geostationary 2
+% h0 =    [0.004877935688997 -0.000092310983385 -0.000024030533584 0.000099994046804]; % earth geostationary 2
 
 % beta = [0.001594863875525;...
 %     0.000132767431070];

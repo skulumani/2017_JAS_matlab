@@ -11,8 +11,8 @@ constants = crtbp_constants;
 % x0 = x0';
 x0 = [0.75;0;0;0.2883]';
 t0 = 0;
-tf = 100; % figure out how to dimensionalize time
-step_exp = 6;
+tf = 200; % figure out how to dimensionalize time
+step_exp = 7;
 num_steps = round(1*10^step_exp);
 width = 5;
 height = 2;
@@ -64,8 +64,8 @@ subplot(4,1,1)
 hold all;grid on
 ylabel('$x$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
 plot(t_ode45,state_ode45(:,1),t_trap,state_trap(:,1))
-h=legend('RK45','VI TRAP');
-set(h,'interpreter','latex');
+leg=legend('RK45','VI TRAP');
+set(leg,'interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times');
 subplot(4,1,2)
 hold all;grid on
 ylabel('$y$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
@@ -109,7 +109,7 @@ plot(t_ode45,state_ode45(:,4),t_trap,state_trap(:,4))
 % energy diff
 fprintf('tf = %5.2f nondim = %5.2e sec = %5.2f yrs\n', tf, tf*constants.t_scale, tf*constants.t_scale/86400/365);
 fprintf('N = %5.2e steps  \n', num_steps);
-fprintf('h = %5.2e nondim = %5.2f sec\n\n',h,h*constants.t_scale);
+fprintf('h = %5.2e nondim = %5.2f sec = %5.2f days\n\n',h,h*constants.t_scale, h*constants.t_scale/86400);
 
 fprintf('ODE energy drift %12.10e\n',mean(abs(E_ode45(end)-E_ode45(1))));
 fprintf('VI RECT energy drift %12.10e\n',mean(abs(E_rect-E_rect(1))));
@@ -133,7 +133,7 @@ plot(t_ode45,E_ode45-E_ode45(1))
 
 plot(t_trap,E_trap-E_trap(1))
 h=legend('RK45','VI TRAP');
-set(h,'interpreter','latex');
+set(h,'interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times');
 
 plot_trajectories(t_ode45, state_ode45, E_ode45(1), traj_fig, constants)
 set(0,'CurrentFigure',traj_fig)
@@ -144,6 +144,7 @@ plot(state_trap(:,1),state_trap(:,2))
 print(e_fig,'-dpsc2', 'energy.eps')
 print(traj_fig,'-dpsc2', 'trajectory.eps')
 print(comp_fig,'-dpsc2', 'components.eps')
+
 % print(e_fig,sprintf('./variational_integrator/energy_diff_h1%s%d.eps','e',step_exp))
 % print(traj_fig,sprintf('./variational_integrator/trajectory_h1%s%d.eps','e',step_exp))
 % print(comp_fig,sprintf('./variational_integrator/state_comp_h1%s%d.eps','e',step_exp))
