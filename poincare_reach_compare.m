@@ -29,12 +29,20 @@ hold all
 grid on
 traj_fig2 = figure();
 
-poincare_fig = figure;
+poincare_fig1 = figure;
 hold all
 grid on
-xlabel('x','interpreter','latex','FontUnits','points','FontSize',19,'FontName','Times')
-ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',19,'FontName','Times')
-title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',19,'FontName','Times')
+xlabel('x','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+
+poincare_fig2 = figure;
+hold all
+grid on
+xlabel('x','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+
 
 % parse out the states for each theta angle
 num_steps = sol_output(1).constants.num_steps;
@@ -63,7 +71,7 @@ for ii = 1:num_theta % loop over theta angles (poincare directions)
     % plot the trajectories on the same plot of the moon periodic orbit
     set(0,'CurrentFigure',traj_fig1);
     plot(state(:,1),state(:,2),'r')
-    set(0,'CurrentFigure',poincare_fig);
+    set(0,'CurrentFigure',poincare_fig1);
     plot(state(end,1),state(end,3),'r.','Markersize',20)
     
 end
@@ -88,7 +96,9 @@ plot_trajectories(t, state, energyconst(moon_x0',constants.mu), traj_fig1, const
 line([0.8352 1.1],[0 0],'Linewidth',4,'Color','k')
 
 % plot the x axis crossing for the Moon bounded orbit
-set(0,'CurrentFigure',poincare_fig);
+set(0,'CurrentFigure',poincare_fig1);
+plot(cross_state(:,1),cross_state(:,3),'b.','Markersize',20)
+set(0,'CurrentFigure',poincare_fig2);
 plot(cross_state(:,1),cross_state(:,3),'b.','Markersize',20)
 %% load the manifold from the periodic orbit
 load './u=05/l1_manifold.mat'
@@ -116,7 +126,7 @@ line([0.8352 1.1],[0 0],'Linewidth',4,'Color','k')
 % Plot Poincare Section
 
 
-set(0,'CurrentFigure',poincare_fig)
+set(0,'CurrentFigure',poincare_fig1)
 
 for ii = 1:5:constants.manifold_steps
     
@@ -128,3 +138,14 @@ for ii = 1:5:constants.manifold_steps
     text(usnm_cross_state(1),usnm_cross_state(3), num2str(usnm_cross_time))
 end
 
+set(0,'CurrentFigure',poincare_fig2)
+
+for ii = 1:5:constants.manifold_steps
+    
+    
+    usnm_cross_time = L1_manifold.us_manifold_neg_time_cross(crossing_sel,ii);
+    usnm_cross_state = L1_manifold.us_manifold_neg_state_cross(crossing_sel,:,ii);
+    
+    plot(usnm_cross_state(1),usnm_cross_state(3),'g.','Markersize',20)
+    text(usnm_cross_state(1),usnm_cross_state(3), num2str(usnm_cross_time))
+end
