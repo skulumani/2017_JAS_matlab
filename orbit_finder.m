@@ -51,4 +51,7 @@ plot_trajectories(t, state, energyconst(moon_x0',constants.mu), traj_fig, consta
 % load l1_reach_second_025.mat
 % load ./u=05/l1_reach_first.mat
 
+load ./u=05/l1_manifold.mat
 
+% plot the initial periodic orbit
+plot(state_1(:,1),state_1(:,2),'k','linewidth',4)
