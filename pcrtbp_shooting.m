@@ -8,12 +8,12 @@ function [sol_output]= pcrtbp_shooting(initial_condition, reach_time)
 
 % constants and problem setup
 constants = crtbp_constants;
-constants.optfsolve = optimoptions(@fsolve,'Display','iter','TolFun',1e-6,'TolX',1e-6,...
-    'Algorithm', 'trust-region-reflective','Jacobian','off',...
+constants.optfsolve = optimoptions(@fsolve,'Display','iter','TolFun',1e-4,'TolX',1e-4,...
+    'MaxIter',5000,'MaxFunEvals',5000, 'Algorithm', 'trust-region-dogleg','Jacobian','off',...
     'DerivativeCheck','off');
 constants.um = 0.5;
 
-num_steps = 400;
+num_steps = 1000;
 constants.num_steps = num_steps;
 
 % [L_points, ~] = libration_points(constants.mu);
@@ -35,13 +35,13 @@ h0_i = 0.1*ones(1,4);
 
 % generate initial guess of state and costate histories
 % from periodic orbit
-h0 = [0.01042140861866;... % hr_x
-    0.005574701108068;... % hr_y
-    0.002230056745460;... % hv_x
-    -0.001157375275785]; % hv_y
+h01 = [   0.032389612643357;...
+   0.010508161299126;...
+   0.000547425479709;...
+   0.001064218889245]; 
 
-beta = [   0.214375541696066
-  12.565082226497877];
+beta1 = [   1.256812564325579;...
+  -0.503978575859051];
 
 num_con = 2;
 constants.num_con = num_con;
@@ -121,11 +121,12 @@ for theta_ind = 1:length(theta)% loop over theta angles
         
         xg(srow_idx:erow_idx8) = [xm(:,mid);hm(:,mid)];
     end
-    xg(1:num_states) = h0;
-    xg(length(xg)-num_con+1:end) = beta;
+    xg(1:num_states) = h01;
+    xg(length(xg)-num_con+1:end) = beta1;
     % iterate to solve for xg
     % test the jacobian
-    % newton iteration loop here
+%     jacobian_test(xg,Q, x0,constants)
+%     % newton iteration loop here
 %     iter = 1;
 %     g = 1;
 %     while norm(g) > 1e-3 && iter < 100
@@ -140,7 +141,7 @@ for theta_ind = 1:length(theta)% loop over theta angles
 %         fprintf('g norm %5.4f\n',norm(g));
 %         iter = iter + 1;
 %     end
-    %     jacobian_test(xg,Q, x0,constants)
+
     [xg,fval,exitflag,output] = fsolve(@(xg)objective(xg,Q, x0, constants),xg,constants.optfsolve);
     
     [x_i, h_i, xm, hm, h0, beta] = prop_seg(xg,x0,constants);

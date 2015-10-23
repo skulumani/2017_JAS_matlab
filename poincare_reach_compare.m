@@ -3,19 +3,13 @@
 % compare times of flight
 
 % also input the target manifold
-function poincare_reach_compare(sol_output,traj_fig)
+function [reach_poincare]=poincare_reach_compare(sol_output,traj_fig, poincare_fig1)
 
 constants = sol_output(1).constants;
 
 % propogate each planar orbit with no control and plot to visualize it
 constants.control_switch = 'off';
 
-poincare_fig1 = figure;
-hold all
-grid on
-xlabel('x','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
 
 
 
@@ -45,14 +39,15 @@ for ii = 1:num_theta % loop over theta angles (poincare directions)
     reach_struct(ii).reach_end = [state(end,:) costate(end,:)];
     % plot the trajectories on the same plot of the moon periodic orbit
     set(0,'CurrentFigure',traj_fig);
-    plot(state(:,1),state(:,2),'r')
+    plot(state(:,1),state(:,2),'.')
     set(0,'CurrentFigure',poincare_fig1);
-    plot(state(end,1),state(end,3),'r.','Markersize',20)
+    plot(state(end,1),state(end,3),'.','Markersize',20)
     
 end
 
 
 reach_poincare = cat(1,reach_struct(:).reach_end);
+
 
 % %% load the manifold from the periodic orbit
 % load './u=05/l1_manifold.mat'
