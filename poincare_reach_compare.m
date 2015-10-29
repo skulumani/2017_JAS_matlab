@@ -8,7 +8,7 @@ function [reach_poincare]=poincare_reach_compare(sol_output,traj_fig, poincare_f
 constants = sol_output(1).constants;
 
 % propogate each planar orbit with no control and plot to visualize it
-constants.control_switch = 'off';
+% constants.control_switch = 'off';
 
 
 

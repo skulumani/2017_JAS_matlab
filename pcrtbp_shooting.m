@@ -20,7 +20,7 @@ constants.num_steps = num_steps;
 % constants.center_vec = L_points(1,:);
 constants.center_vec = [-constants.mu 0]; % centered at the Earth
 
-constants.alpha_d = 0*pi/180 ; % angle that defines the poincare section
+constants.alpha_d = 1*pi/180 ; % angle that defines the poincare section
 
 x0_i = initial_condition;
 T_i = reach_time;
