@@ -1,0 +1,6 @@
+This folder contains the reachability sets generated from an Earth GEO orbit. 
+
+The control inputs is um = 0.75 and is larger than the usual u=0.5
+
+Each minimum state is computed using the minx (furthest left) option in minimum_reach.m
+

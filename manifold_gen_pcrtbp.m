@@ -185,8 +185,8 @@ manifold.s_manifold_neg_state_cross = s_manifold_neg_state_cross;
 
 fprintf('Completed manifold globalization \n')
 % plot manifolds if selected
-if constants.manifold_plot
-    
+switch constants.manifold_plot
+    case 'true'
     fig_handle = figure;
     hold on;grid on; axis equal
     title('Invariant Manifolds')
@@ -213,7 +213,8 @@ if constants.manifold_plot
     end
     
      energy_contour(mu, per_orbit_E, fig_handle);
-    
+    case 'false'
+        fprintf('No plotting \n')
 end
 
 function [value,isterminal,direction]=manifold_event(t,state,constants)
@@ -241,9 +242,11 @@ switch section
        
     case 4
         
-            value = y; % x < -1
+        value = y; % x < -1
     case 'transfer'
-        value = y; % x > 
+        value = y; % x > 0
+    case 'y_axis'
+        value = x+mu;
         
 end
 

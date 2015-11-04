@@ -11,7 +11,7 @@ constants = crtbp_constants;
 constants.optfsolve = optimoptions(@fsolve,'Display','iter','TolFun',1e-4,'TolX',1e-4,...
     'MaxIter',5000,'MaxFunEvals',5000, 'Algorithm', 'trust-region-dogleg','Jacobian','off',...
     'DerivativeCheck','off');
-constants.um = 0.5;
+constants.um = 0.75;
 
 num_steps = 1000;
 constants.num_steps = num_steps;

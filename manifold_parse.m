@@ -2,7 +2,9 @@
 % parse out a stable manifold
 
 function manifold_poincare = manifold_parse(traj_fig, poincare_fig)
-load './l1_manifold_geo.mat'
+% load './l1_manifold_geo2.mat' % longer time span of manifold propogation
+load './manifolds/l1_manifold_geo4.mat' % increase of E to see if it passes closer to the earth
+
 
 % number of crossings of the x axis to plot
 crossing_sel = 3;
@@ -19,34 +21,40 @@ for ii = 1:1:constants.manifold_steps
     snms = L1_s_manifold_neg_state(:,:,ii);
     
     % maximum time along the manifold (number of x axis crossings)
-    %     max_t_uspm = L1_manifold.us_manifold_pos_time_cross(crossing_sel,ii);
-    %     [~,uspms_cross_index ] = min(abs(L1_us_manifold_pos_time(:,ii)  - max_t_uspm));
-    %
-    %     max_t_usnm = L1_manifold.us_manifold_neg_time_cross(crossing_sel,ii);
-    %     [~,usnms_cross_index ] = min(abs(L1_us_manifold_neg_time(:,ii)  - max_t_usnm));
-    %
-    %     max_t_spm = L1_manifold.s_manifold_pos_time_cross(crossing_sel,ii);
-    %     [~,spms_cross_index ] = min(abs(L1_s_manifold_pos_time(:,ii)  - max_t_spm));
-    %
-    %     max_t_snm = L1_manifold.s_manifold_neg_time_cross(crossing_sel,ii);
-    %     [~,snms_cross_index ] = min(abs(L1_s_manifold_neg_time(:,ii)  - max_t_snm));
+    % also ensure that all trajectories are at the correct section
     
+%         max_t_snm = L1_manifold.s_manifold_neg_time_cross(crossing_sel,ii);
+%         [~,snms_cross_index ] = min(abs(L1_s_manifold_neg_time(:,ii)  - max_t_snm));
+    
+        
     % find index of crossing state that hits the U1 section y = 0 x < 0
     snm_index = find(L1_manifold.s_manifold_neg_state_cross(:,1,ii) < 0);
+    % y axis poincare section x = -mu y > 0
+%     snm_index = find(L1_manifold.s_manifold_neg_state_cross(:,2,ii) > 0 );
+    
     max_t_snm = L1_manifold.s_manifold_neg_time_cross(snm_index(1),ii);
     [~,snms_cross_index ] = min(abs(L1_s_manifold_neg_time(:,ii)  - max_t_snm));
     
+    
+    
     snm_cross_state = L1_manifold.s_manifold_neg_state_cross(snm_index(1),:,ii);
     manifold_poincare(ii,:) = snm_cross_state;
+
     % plot the manifold
-    %     plot(uspms(1:uspms_cross_index,1),uspms(1:uspms_cross_index,2),'r')
-    %     plot(usnms(1:usnms_cross_index,1),usnms(1:usnms_cross_index,2),'r')
-    
-    %     plot(spms(1:spms_cross_index,1),spms(1:spms_cross_index,2),'g')
+
+    % for U1 section y = 0 x < 0
     set(0,'CurrentFigure',traj_fig)
     plot(snms(1:snms_cross_index,1),snms(1:snms_cross_index,2),'g')
+
     set(0,'CurrentFigure',poincare_fig)
     plot(snm_cross_state(1),snm_cross_state(3),'g.','Markersize',20)
+    
+%     % for y axis section y > 0 x = -mu
+%     set(0,'CurrentFigure',traj_fig)
+%     plot(snms(1:snms_cross_index,1),snms(1:snms_cross_index,2),'g')
+% 
+%     set(0,'CurrentFigure',poincare_fig)
+%     plot(snm_cross_state(2),snm_cross_state(4),'g.','Markersize',20)
 end
 
 % plot(state_1(:,1),state_1(:,2),'k','linewidth',4)

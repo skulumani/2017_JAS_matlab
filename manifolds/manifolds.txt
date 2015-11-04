@@ -1,0 +1,11 @@
+This folder has the stable manifolds from the L1 periodic orbit.
+
+l1_manifold_geo4.mat is generated using a smaller energy (closer to zero) and does not pass very close to the Earth.
+
+l1_manifold_geo5.mat is generated using a larger energy value and passes as close to the Earth as possible. 
+
+To generate these manifolds you need to run manifold_plotter.m
+
+To change the energy value go to crtbp_constants.m
+
+To change the location of the section look in manifold_gen_pcrtbp.m / manifold_events for the logic to switch Poincare sections.

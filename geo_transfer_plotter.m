@@ -28,10 +28,11 @@ manifold_poincare = manifold_parse(traj_fig, poincare_fig);
 
 % generate the target Poincare section
 %% loop over the mat files that hold the transfer iterations
-for iter = 1:7
+for iter = 1:4
     % file name
-%     filename = ['geo_transfer_' num2str(iter) '.mat'];
-    filename = ['geo_transfer_minx_' num2str(iter) '.mat'];
+% filename = ['./u=0.5_mindist/geo_transfer_' num2str(iter) '.mat'];
+%     filename = ['./u=0.5_minx/geo_transfer_minx_' num2str(iter) '.mat'];
+filename = ['./u=0.75/geo_transfer_' num2str(iter) '.mat'];
     load(filename);
     % find the minimum from each to the target set (stable manifold)
     [min_reach, min_man, min_traj] = minimum_reach(sol_output,manifold_poincare);

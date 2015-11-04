@@ -89,4 +89,4 @@ min_reach = reach_poincare(x_ind,:);
 min_man = manifold_poincare(row_ind,:);
 min_traj = reach_struct(x_ind).state;
 
-
+%% find the state the lies on the x = -mu y > 0 poincare section
