@@ -20,7 +20,7 @@ constants.num_steps = num_steps;
 % constants.center_vec = L_points(1,:);
 constants.center_vec = [-constants.mu 0]; % centered at the Earth
 
-constants.alpha_d = 1*pi/180 ; % angle that defines the poincare section
+constants.alpha_d = 0*pi/180 ; % angle that defines the poincare section
 
 x0_i = initial_condition;
 T_i = reach_time;
@@ -51,7 +51,7 @@ constants.control_switch = 'off';
 tf = T_i;
 
 % generate the sub intervals and a guess of trajectories
-num_seg = 4; % should be cleanly divisble by the number of steps
+num_seg = 2; % should be cleanly divisble by the number of steps
 t = zeros(num_seg, num_steps/num_seg);
 x_i = zeros(num_steps/num_seg,4,num_seg);
 h_i = zeros(num_steps/num_seg,4,num_seg);

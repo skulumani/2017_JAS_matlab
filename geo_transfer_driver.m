@@ -32,7 +32,7 @@ constants.control_switch = 'off';
 % propogate forward or backward to find the period of the orbit
 options_cross = odeset('RelTol',constants.RelTol,'AbsTol',constants.AbsTol,'Events',@events_xcross_nostop);
 % forward propogation
-[t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 1],earth_x0,options_cross) ;
+[t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 0.4],earth_x0,options_cross) ;
 % backward propogation
 % [t,state,cross_t,cross_state,ie] = ode113(@(t,state)bw_pcrtbp_ode(t,state,constants.mu),[-1 0],earth_x0,options_cross) ;
 
@@ -40,14 +40,14 @@ plot_trajectories(t, state, energyconst(earth_x0',constants.mu), traj_fig, const
 
 % initial condition for shooting reachability computation
 initial_condition = earth_x0;
-period = cross_t(3);
+period = cross_t(3)-0.008;
 %% generate the stable manifold for the L1 periodic orbit
 
 manifold_poincare = manifold_parse(traj_fig, poincare_fig1);
 
 %% Call the shooting method function to compute the reachability set for this initial condition
-[sol_output]= pcrtbp_shooting(initial_condition, period);
-% load('geo_transfer_4.mat')
+% [sol_output]= pcrtbp_shooting(initial_condition, period);
+load('geo_transfer_8.mat')
 
 %% Analyze the reachable set by plotting it
 

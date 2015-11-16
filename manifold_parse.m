@@ -28,10 +28,12 @@ for ii = 1:1:constants.manifold_steps
     
         
     % find index of crossing state that hits the U1 section y = 0 x < 0
-    snm_index = find(L1_manifold.s_manifold_neg_state_cross(:,1,ii) < 0);
+%     snm_index = find(L1_manifold.s_manifold_neg_state_cross(:,1,ii) < 0);
     % y axis poincare section x = -mu y > 0
 %     snm_index = find(L1_manifold.s_manifold_neg_state_cross(:,2,ii) > 0 );
     
+    % index of manifold state that crosses at y = 0 x <0
+    snm_index = find(L1_manifold.s_manifold_neg_state_cross(:,1,ii) < 0)+1;
     max_t_snm = L1_manifold.s_manifold_neg_time_cross(snm_index(1),ii);
     [~,snms_cross_index ] = min(abs(L1_s_manifold_neg_time(:,ii)  - max_t_snm));
     

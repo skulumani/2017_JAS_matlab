@@ -2,7 +2,7 @@
 % load the transfer mat files and plot the minimum from each
 
 clc
-% close all
+close all
 
 constants = crtbp_constants;
 constants.control_switch = 'off';
@@ -28,36 +28,53 @@ manifold_poincare = manifold_parse(traj_fig, poincare_fig);
 
 % generate the target Poincare section
 %% loop over the mat files that hold the transfer iterations
-for iter = 1:4
+reach_switch_vec = {'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'max_x'}; 
+for iter = 1:8
     % file name
-% filename = ['./u=0.5_mindist/geo_transfer_' num2str(iter) '.mat'];
-%     filename = ['./u=0.5_minx/geo_transfer_minx_' num2str(iter) '.mat'];
-filename = ['./u=0.75/geo_transfer_' num2str(iter) '.mat'];
+    % filename = ['./u=0.5_mindist/geo_transfer_' num2str(iter) '.mat'];
+%         filename = ['./u=0.5_minx/geo_transfer_minx_' num2str(iter) '.mat'];
+%     filename = ['./u=0.75/geo_transfer_' num2str(iter) '.mat'];
+    filename = ['geo_transfer_' num2str(iter) '.mat'];
     load(filename);
-    % find the minimum from each to the target set (stable manifold)
-    [min_reach, min_man, min_traj] = minimum_reach(sol_output,manifold_poincare);
-    % plot the minimum Poincare, and trajectory for each iteration
-    set(0,'CurrentFigure',traj_fig);
-    plot(min_traj(:,1),min_traj(:,2),'.')
+    % logic to change if we use minimum distance or maximize x value
     
-    set(0,'CurrentFigure',poincare_fig)
-    plot(min_reach(1),min_reach(3),'.','Markersize',20);
-    line([min_reach(1) min_man(1)],[min_reach(3) min_man(3)])
+    
+    % find the minimum from each to the target set (stable manifold)
+    [min_reach, min_man, min_traj] = minimum_reach(sol_output,manifold_poincare, reach_switch_vec{iter});
+
     
     % take the minimum reach and propogate forward or backward to the
-    % nearest x axis crossing
-    if min_reach(2) < 0 % propogate backwards
-        % backward propogation
-        [t,state,cross_t,cross_state,ie] = ode113(@(t,state)bw_pcrtbp_ode(t,state,constants.mu),[-1 0],min_reach(1:4),options_cross) ;
-    elseif min_reach(2) > 0
-        % forward propogation
-        [t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 1],min_reach(1:4),options_cross) ;
+    % nearest x < 0 axis crossing
+    if min_reach(1) < 0
+        if min_reach(2) < 0 % propogate backwards
+            % backward propogation
+            [t,state,cross_t,cross_state,ie] = ode113(@(t,state)bw_pcrtbp_ode(t,state,constants.mu),[-1 0],min_reach(1:4),options_cross) ;
+        elseif min_reach(2) > 0
+            % forward propogation
+            [t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 1],min_reach(1:4),options_cross) ;
+        end
+    elseif min_reach(1) > 0
+        if min_reach(2) > 0 % propogate backwards
+            % backward propogation
+            [t,state,cross_t,cross_state,ie] = ode113(@(t,state)bw_pcrtbp_ode(t,state,constants.mu),[-1 0],min_reach(1:4),options_cross) ;
+        elseif min_reach(2) < 0
+            % forward propogation
+            [t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 1],min_reach(1:4),options_cross) ;
+        end
     end
-    
     fprintf('Reach State Iteration %d\n',iter)
     fprintf('earth_x0 = [')
     fprintf('%20.20f; ',cross_state(1,:))
     fprintf(']\n\n')
+    
+    % plot the minimum Poincare, and trajectory for each iteration
+    set(0,'CurrentFigure',traj_fig);
+    plot(min_traj(:,1),min_traj(:,2),'.')
+
+    set(0,'CurrentFigure',poincare_fig)
+    plot(min_reach(1),min_reach(3),'.','Markersize',20);
+    line([min_reach(1) min_man(1)],[min_reach(3) min_man(3)])
+    text(min_reach(1),min_reach(3),num2str(iter))
     
 %     keyboard
 end
