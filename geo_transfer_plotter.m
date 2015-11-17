@@ -27,9 +27,12 @@ title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',9
 manifold_poincare = manifold_parse(traj_fig, poincare_fig);
 
 % generate the target Poincare section
-%% loop over the mat files that hold the transfer iterations
+%% loop over the mat files that hold the reachability transfer iterations
 reach_switch_vec = {'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'max_x'}; 
-for iter = 1:8
+
+% concatonate the states into one big trajectory
+state_all = [];
+for iter = 1:7
     % file name
     % filename = ['./u=0.5_mindist/geo_transfer_' num2str(iter) '.mat'];
 %         filename = ['./u=0.5_minx/geo_transfer_minx_' num2str(iter) '.mat'];
@@ -48,18 +51,18 @@ for iter = 1:8
     if min_reach(1) < 0
         if min_reach(2) < 0 % propogate backwards
             % backward propogation
-            [t,state,cross_t,cross_state,ie] = ode113(@(t,state)bw_pcrtbp_ode(t,state,constants.mu),[-1 0],min_reach(1:4),options_cross) ;
+            [~,~,cross_t,cross_state,ie] = ode113(@(t,state)bw_pcrtbp_ode(t,state,constants.mu),[-1 0],min_reach(1:4),options_cross) ;
         elseif min_reach(2) > 0
             % forward propogation
-            [t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 1],min_reach(1:4),options_cross) ;
+            [~,~,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 1],min_reach(1:4),options_cross) ;
         end
     elseif min_reach(1) > 0
         if min_reach(2) > 0 % propogate backwards
             % backward propogation
-            [t,state,cross_t,cross_state,ie] = ode113(@(t,state)bw_pcrtbp_ode(t,state,constants.mu),[-1 0],min_reach(1:4),options_cross) ;
+            [~,~,cross_t,cross_state,ie] = ode113(@(t,state)bw_pcrtbp_ode(t,state,constants.mu),[-1 0],min_reach(1:4),options_cross) ;
         elseif min_reach(2) < 0
             % forward propogation
-            [t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 1],min_reach(1:4),options_cross) ;
+            [~,~,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 1],min_reach(1:4),options_cross) ;
         end
     end
     fprintf('Reach State Iteration %d\n',iter)
@@ -76,6 +79,27 @@ for iter = 1:8
     line([min_reach(1) min_man(1)],[min_reach(3) min_man(3)])
     text(min_reach(1),min_reach(3),num2str(iter))
     
+    state_all = [state_all;min_traj];
 %     keyboard
 end
 
+% add on the last optimal transfer trajectory to get onto the stable
+% manifold
+load('geo_transfer_final.mat')
+state_all = [state_all;state(:,1:4)];
+
+set(0,'CurrentFigure',traj_fig);
+plot(state(:,1),state(:,2),'r.')
+
+set(0,'CurrentFigure',poincare_fig)
+plot(state(end,1),state(end,3),'.','Markersize',20);
+text(state(end,1),state(end,3),'Opt')
+    
+% propogate the last state forward in time until reaching the periodic
+% orbit
+stable_man = [ 0.175319307882103 -0.000000000000020 -0.282163264918425 2.717676740320596];
+opt_trans = state_all(end,1:4);
+[t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 8],opt_trans,options_cross) ;
+
+set(0,'CurrentFigure',traj_fig);
+plot(state(:,1),state(:,2),'r.')

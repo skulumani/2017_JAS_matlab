@@ -4,7 +4,7 @@
 function manifold_poincare = manifold_parse(traj_fig, poincare_fig)
 % load './l1_manifold_geo2.mat' % longer time span of manifold propogation
 load './manifolds/l1_manifold_geo4.mat' % increase of E to see if it passes closer to the earth
-
+% load 'l1_manifold_geo5.mat'
 
 % number of crossings of the x axis to plot
 crossing_sel = 3;

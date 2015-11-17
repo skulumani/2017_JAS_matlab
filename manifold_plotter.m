@@ -14,7 +14,9 @@ T_i = T_1;
 % x0_i = [0.815614054266804 0 0 0.192227407664904]'; % initial condition on periodic orbit
 % T_i = 1.407478324303006; % half period of initial periodic orbit
 % constants.poincare_section = 1;
-constants.poincare_section = 'y_axis';
+constants.poincare_section = 'transfer'; % x axis section
+% constants.poincare_section = 'y_axis';
+
 constants.manifold_plot = 'false';
 
 options_cross = odeset('RelTol',constants.RelTol,'AbsTol',constants.AbsTol);

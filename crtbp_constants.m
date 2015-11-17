@@ -32,7 +32,7 @@ constants.halo_switch = 'north';
 
 % manifold parameters
 constants.numsteps = 2000;
-constants.manifold_steps = 100;
+constants.manifold_steps = 200;
 constants.manifold_tf_multipler = 5; % 
 constants.epsilon = 50/constants.l_scale;
 constants.manifold_plot = 0;
