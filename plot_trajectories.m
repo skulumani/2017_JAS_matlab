@@ -58,7 +58,7 @@ xlabel(['X' units_label],'interpreter','latex','FontUnits','points','FontSize',9
 ylabel(['Y' units_label],'interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
 zlabel(['Z' units_label],'interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
 
-% contour(X,Y,E_grid,[E,E],'r')
+contour(X,Y,E_grid,[E,E],'r')
 
 plot3(l_scale*L1(1), 0,0, 'k.', l_scale*L2(1), 0,0, 'k.', l_scale*L3(1), 0,0,'k.','Markersize',20)
 plot3(l_scale*L4(1), l_scale*L4(2),0,'k.','Markersize',20)
@@ -81,9 +81,9 @@ num_states = size(state,2);
 
 switch num_states
     case 4
-        plot(l_scale*state(:,1),l_scale*state(:,2))
+        plot(l_scale*state(:,1),l_scale*state(:,2),'b', 'linewidth',3)
     case 6
-        plot3(l_scale*state(:,1),l_scale*state(:,2),l_scale*state(:,3))
+        plot3(l_scale*state(:,1),l_scale*state(:,2),l_scale*state(:,3),'b', 'linewidth',3)
 end
 
 % plot(l_scale*-mu,0,'r*',l_scale*(1-mu),0,'r*')

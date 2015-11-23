@@ -30,7 +30,7 @@ h0_i = zeros(4,1); % assuming no control so it doesn't matter
 
 % plot the planar orbits
 traj_fig= figure(1);
-
+hold on
 % plot_trajectories(t_L1, state_L1(:,1:4), constants.e_desired, fig_handle, constants)
 % plot_trajectories(t_L2, state_L2(:,1:4), constants.e_desired, fig_handle, constants)
 
@@ -51,7 +51,12 @@ plot_trajectories(t, state, energyconst(earth_x0',constants.mu), traj_fig, const
 % load l1_reach_second_025.mat
 % load ./u=05/l1_reach_first.mat
 
-load ./u=05/l1_manifold.mat
+% load ./u=05/l1_manifold.mat
 
+% desired periodic orbit (Geo to L1 periodic orbit transfer)
+[x0_1, T_1, ~, ~] = periodic_orbit_pcrtbp(1, constants.e_desired, constants);
+x0_i = x0_1;
+T_i = T_1;
+[t, state] = trajectory_simulate(x0_i, [0 2*T_i],'pcrtbp', constants);
 % plot the initial periodic orbit
-plot(state_1(:,1),state_1(:,2),'k','linewidth',4)
+plot_trajectories(t, state, constants.e_desired, traj_fig, constants)
