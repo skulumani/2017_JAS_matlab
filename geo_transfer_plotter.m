@@ -23,6 +23,13 @@ xlabel('x','interpreter','latex','FontUnits','points','FontSize',9,'FontName','T
 ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
 title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
 
+control_fig = figure(3);
+hold all
+grid on
+xlabel('t','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+ylabel('$u$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+title('Control Input','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+
 %% INITIAL load initial condition (geostationary orbit)
 
 
@@ -35,6 +42,9 @@ reach_switch_vec = {'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_
 
 % concatonate the states into one big trajectory
 state_all = [];
+control_all = [];
+time_all = [];
+max_time = 0;
 for iter = 1:7
     % file name
     % filename = ['./u=0.5_mindist/geo_transfer_' num2str(iter) '.mat'];
@@ -46,7 +56,7 @@ for iter = 1:7
     
     
     % find the minimum from each to the target set (stable manifold)
-    [min_reach, min_man, min_traj] = minimum_reach(sol_output,manifold_poincare, reach_switch_vec{iter});
+    [min_reach, min_man, min_traj,min_costate,min_control,min_time,reach_struct] = minimum_reach(sol_output,manifold_poincare, reach_switch_vec{iter});
 
     
     % take the minimum reach and propogate forward or backward to the
@@ -82,7 +92,21 @@ for iter = 1:7
 %     line([min_reach(1) min_man(1)],[min_reach(3) min_man(3)])
     text(min_reach(1),min_reach(3),num2str(iter), 'color', 'red', 'fontsize', 12, 'verticalalignment', 'bottom','horizontalalignment','right')
     
-    state_all = [state_all;min_traj];
+    
+    if iter == 3
+        set(0,'CurrentFigure',poincare_fig)
+        for ii = 1:length(reach_struct)
+            if reach_struct(ii).reach_end(1) > 0.13
+                plot(reach_struct(ii).reach_end(1),reach_struct(ii).reach_end(3),'r.','markersize',20)
+            end
+        end
+    end
+    
+    
+    time_all = [time_all;min_time+repmat(max_time,length(min_time),1)];
+    max_time = time_all(end);
+    state_all = [state_all;min_traj(:,1:4)];
+    control_all = [control_all;min_control];
 %     keyboard
 end
 
@@ -90,9 +114,14 @@ end
 % manifold
 load('geo_transfer_final.mat')
 state_all = [state_all;state(:,1:4)];
+control_all = [control_all;u];
+time_all = [time_all;t+repmat(max_time,length(t),1)];
 
 set(0,'CurrentFigure',traj_fig);
 plot(state(:,1),state(:,2),'r')
+
+set(0,'CurrentFigure',control_fig);
+plot(time_all,control_all)
 
 set(0,'CurrentFigure',poincare_fig)
 plot(state(end,1),state(end,3),'.','Markersize',20);
