@@ -9,26 +9,30 @@ constants.control_switch = 'off';
 
 options_cross = odeset('RelTol',constants.RelTol,'AbsTol',constants.AbsTol,'Events',@events_xcross_nostop);
 
+set(0,'DefaultAxesFontSize',22);
+
 % initialize some plots to use later
 traj_fig= figure(1);
 hold on
-xlabel('x','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-ylabel('y','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-title('Trajectory','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+
+xlabel('x','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+ylabel('y','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+title('Trajectory','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+
 
 poincare_fig = figure(2);
 hold all
 grid on
-xlabel('x','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+xlabel('x','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
 control_fig = figure(3);
 hold all
 grid on
-xlabel('t','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-ylabel('$u$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-title('Control Input','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+xlabel('t','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+ylabel('$u$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+title('Control Input','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
 %% INITIAL load initial condition (geostationary orbit)
 
@@ -89,18 +93,19 @@ for iter = 1:7
 
     set(0,'CurrentFigure',poincare_fig)
     plot(min_reach(1),min_reach(3),'k.','Markersize',20);
-%     line([min_reach(1) min_man(1)],[min_reach(3) min_man(3)])
+
     text(min_reach(1),min_reach(3),num2str(iter), 'color', 'red', 'fontsize', 12, 'verticalalignment', 'bottom','horizontalalignment','right')
     
     
-    if iter == 3
-        set(0,'CurrentFigure',poincare_fig)
-        for ii = 1:length(reach_struct)
-            if reach_struct(ii).reach_end(1) > 0.13
-                plot(reach_struct(ii).reach_end(1),reach_struct(ii).reach_end(3),'r.','markersize',20)
-            end
-        end
-    end
+%     if iter == 3
+%         set(0,'CurrentFigure',poincare_fig)
+%         for ii = 1:length(reach_struct)
+%             if reach_struct(ii).reach_end(1) > 0.13
+%                 plot(reach_struct(ii).reach_end(1),reach_struct(ii).reach_end(3),'r.','markersize',20)
+%                 line([min_reach(1) min_man(1)],[min_reach(3) min_man(3)],'linewidth',3)
+%             end
+%         end
+%     end
     
     
     time_all = [time_all;min_time+repmat(max_time,length(min_time),1)];
@@ -122,6 +127,8 @@ plot(state(:,1),state(:,2),'r')
 
 set(0,'CurrentFigure',control_fig);
 plot(time_all,control_all)
+control_legend = legend('$u_x$','$u_y$');
+set(control_legend,'interpreter','Latex','FontUnits','points','FontSize',22,'FontName','Times');
 
 set(0,'CurrentFigure',poincare_fig)
 plot(state(end,1),state(end,3),'.','Markersize',20);
