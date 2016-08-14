@@ -58,7 +58,7 @@ xlabel(['X' units_label],'interpreter','latex','FontUnits','points','FontSize',2
 ylabel(['Y' units_label],'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 zlabel(['Z' units_label],'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
-% contour(X,Y,E_grid,[E,E],'r')
+contour(X,Y,E_grid,[E,E],'r')
 
 plot3(l_scale*L1(1), 0,0, 'k.', l_scale*L2(1), 0,0, 'k.', l_scale*L3(1), 0,0,'k.','Markersize',20)
 plot3(l_scale*L4(1), l_scale*L4(2),0,'k.','Markersize',20)

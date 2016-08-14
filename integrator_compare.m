@@ -5,7 +5,7 @@ close all
 clc
 % define constants
 constants = crtbp_constants;
-
+set(0,'DefaultAxesFontSize',22);
 % define initial conditions
 % [x0, ~, E_i, ~] = periodic_orbit_pcrtbp(constants.l_point, constants.e_desired, constants);
 % x0 = x0';
@@ -62,22 +62,22 @@ set(0,'CurrentFigure',comp_fig)
 subplot(4,1,1)
 % title('ODE45 and VI TRAP')
 hold all;grid on
-ylabel('$x$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+ylabel('$x$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 plot(t_ode45,state_ode45(:,1),t_trap,state_trap(:,1))
 leg=legend('RK45','VI TRAP');
-set(leg,'interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times');
+set(leg,'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times');
 subplot(4,1,2)
 hold all;grid on
-ylabel('$y$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+ylabel('$y$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 plot(t_ode45,state_ode45(:,2),t_trap,state_trap(:,2))
 subplot(4,1,3)
 hold all;grid on
-ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 plot(t_ode45,state_ode45(:,3),t_trap,state_trap(:,3))
 subplot(4,1,4)
 hold all;grid on
-ylabel('$\dot{y}$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-xlabel('$t$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+ylabel('$\dot{y}$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+xlabel('$t$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 plot(t_ode45,state_ode45(:,4),t_trap,state_trap(:,4))
 
 % plot the difference
@@ -127,17 +127,17 @@ set(0,'CurrentFigure',e_fig)
 
 grid on
 hold all
-xlabel('$t$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
-ylabel('$ \Delta E$','interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times')
+xlabel('$t$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+ylabel('$ \Delta E$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 plot(t_ode45,E_ode45-E_ode45(1))
 
 plot(t_trap,E_trap-E_trap(1))
 h=legend('RK45','VI TRAP');
-set(h,'interpreter','latex','FontUnits','points','FontSize',9,'FontName','Times');
+set(h,'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times');
 
 plot_trajectories(t_ode45, state_ode45, E_ode45(1), traj_fig, constants)
 set(0,'CurrentFigure',traj_fig)
-plot(state_trap(:,1),state_trap(:,2))
+plot(state_trap(:,1),state_trap(:,2),'r')
 % plot_trajectories(t_rect, state_rect, E_rect(1), traj_fig, constants)
 % plot_trajectories(t_trap, state_trap, E_trap(1), traj_fig, constants)
 

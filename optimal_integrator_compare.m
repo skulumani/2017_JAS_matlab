@@ -1,7 +1,7 @@
 % test to compare propogation of the continuous vs discrete state and
 % costate equations
 % clear all
-clc
+% clc
 % close all
 % define constants
 constants = crtbp_constants;
@@ -11,7 +11,7 @@ x0 = rand(1,4);
 h0 = rand(1,4);
 
 t0 = 0;
-tf = 2; % figure out how to dimensionalize time
+tf = 200; % figure out how to dimensionalize time
 step_exp = 5;
 num_steps = round(1*10^step_exp);
 
