@@ -12,3 +12,9 @@ https://shankarkulumani@bitbucket.org/shankarkulumani/2015-aas-manuscript.git
 
 https://github.com/skulumani/2015-AAS-presentation
 https://github.com/skulumani/2015_AAS
+
+## IMPORTANT
+
+There are several large files which are not tracked in `git`, instead these are backed up to Google Drive. 
+
+Make sure you do not overwrite/delete files on Google drive, but rather only pull.
