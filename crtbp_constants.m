@@ -32,8 +32,8 @@ constants.halo_switch = 'north';
 
 % manifold parameters
 constants.numsteps = 2000;
-constants.manifold_steps = 100;
-constants.manifold_tf_multipler = 3; % 
+constants.manifold_steps = 200;
+constants.manifold_tf_multipler = 5; % 
 constants.epsilon = 50/constants.l_scale;
 constants.manifold_plot = 0;
 
@@ -51,9 +51,11 @@ L1 = [L_points(1,:) 0 0 0 0];
 L2 = [L_points(2,:) 0 0 0 0];
 L3 = [L_points(3,:) 0 0 0 0];
 
+E1 = energyconst(L1,mu);
 E2 = energyconst(L2,mu);
 E3 = energyconst(L3,mu);
 
-e_desired = E2 + 0.1*abs(E2-E3); % desired energy level of periodic orbit larger than E2 or more positive
+e_desired = E2 + 0.39*abs(E2-E3); % desired energy level of periodic orbit larger than E2 or more positive
 % e_desired = -1.4778;
+
 constants.e_desired = e_desired;

@@ -1,51 +1,29 @@
 % 8 July 2015
 % Multiple shooting for PCRTBP Variational problem. Really hope this works
 % finally
-function pcrtbp_shooting
-close all
-clc
-clear all
+function [sol_output]= pcrtbp_shooting(initial_condition, reach_time)
+% close all
+% clc
+% clear all
 
 % constants and problem setup
 constants = crtbp_constants;
-constants.optfsolve = optimoptions(@fsolve,'Display','iter','TolFun',1e-6,'TolX',1e-6,...
-    'Algorithm', 'trust-region-reflective','Jacobian','off',...
+constants.optfsolve = optimoptions(@fsolve,'Display','iter','TolFun',1e-4,'TolX',1e-4,...
+    'MaxIter',5000,'MaxFunEvals',5000, 'Algorithm', 'trust-region-dogleg','Jacobian','off',...
     'DerivativeCheck','off');
-constants.um = 0.5;
+constants.um = 0.75;
 
-num_steps = 400;
+num_steps = 1000;
 constants.num_steps = num_steps;
 
-[L_points, ~] = libration_points(constants.mu);
+% [L_points, ~] = libration_points(constants.mu);
 % constants.center_vec = L_points(1,:);
-constants.center_vec = [-constants.mu 0];
+constants.center_vec = [-constants.mu 0]; % centered at the Earth
 
 constants.alpha_d = 0*pi/180 ; % angle that defines the poincare section
 
-% generate an initial periodic orbit
-
-% iterations from um = 0.1
-% min state from l1_reach1.mat (second iteration)
-% x0_i=[0.854230866854948   0.000002940915581   0.017850049210949 -0.150017324041792];
-% min state from l1_reach_second (third iteration)
-% x0_i = [0.929235180302524  -0.001184714718967   0.480459413062010   0.012501857639028];
-% periodic orbit
-
-% iterations from um = 0.25
-% x0_i = [0.843741045660152   0.000014266827793   0.056397653670216  -0.066280767615112];
-
-x0_i = [0.815614054266804 0 0 0.192227407664904]; % initial condition on periodic orbit
-T_i = 1.407478324303006; % half period of initial periodic orbit
-
-% x0_i = [0.097188181581686 0 0 3.001035378159969]; % earth geostationary 1
-% T_i = 0.135502731929080*3;
-
-% x0_i = [  -0.147950391731881 -0.000124384449490 0.083507353750893 -2.447933841083721]; % earth geostationary 2
-% T_i = 0.139779243787031*4;
-
-% generate a target periodic orbit
-x0_t = [0.813217758536162 0 0 0.219019807293238];
-T_t = 1.429672365611922; % half period of target periodic orbit
+x0_i = initial_condition;
+T_i = reach_time;
 
 % propogate the intial and target orbits to the poincare section using
 % variational integrator
@@ -53,31 +31,17 @@ constants.control_switch = 'off';
 h0_i = 0.1*ones(1,4);
 
 [t_i, state_i,~] = pcrtbp_optimal_var(x0_i,h0_i,0,T_i, 'trap', num_steps, constants);
-[t_t, state_t,~] = pcrtbp_optimal_var(x0_t,h0_i,0,T_t, 'trap', num_steps, constants);
+
 
 % generate initial guess of state and costate histories
-% iterations from um = 0.1
-% third iteration
-% h0 = [0.008463155581583   0.000226339097023  -0.001160582360619  -0.000018519404256];
-% second iteration
-% h0 = [0.042748447590929   0.005043617996929  -0.012210619638035 0.000012708076080];
-% 
+% from periodic orbit
+h01 = [   0.032389612643357;...
+   0.010508161299126;...
+   0.000547425479709;...
+   0.001064218889245]; 
 
-% iterations from um = 0.25
-% h0 = [0.105164167219524 0.014149650814560  -0.032881244319099   0.000011463431402];
-
-% % from periodic orbit
-h0 = [0.01042140861866;... % hr_x
-    0.005574701108068;... % hr_y
-    0.002230056745460;... % hv_x
-    -0.001157375275785]; % hv_y
-
-% h0 =    [0.004877935688997 -0.000092310983385 -0.000024030533584 0.000099994046804]; % earth geostationary 2
-
-% beta = [0.001594863875525;...
-%     0.000132767431070];
-beta = [   0.214375541696066
-  12.565082226497877];
+beta1 = [   1.256812564325579;...
+  -0.503978575859051];
 
 num_con = 2;
 constants.num_con = num_con;
@@ -87,7 +51,7 @@ constants.control_switch = 'off';
 tf = T_i;
 
 % generate the sub intervals and a guess of trajectories
-num_seg = 4; % should be cleanly divisble by the number of steps
+num_seg = 2; % should be cleanly divisble by the number of steps
 t = zeros(num_seg, num_steps/num_seg);
 x_i = zeros(num_steps/num_seg,4,num_seg);
 h_i = zeros(num_steps/num_seg,4,num_seg);
@@ -120,8 +84,6 @@ Q = [1 0 0 0;0 0 0 0;0 0 1 0;0 0 0 0];
 % no control final state to maximize against
 constants.xcf = state_i(end,1:4)';
 
-% fixed final state to minimize towards ( from um = 0.5 iteration)
-constants.xt = [0.927258145099694 0  -0.036751604638168   0.369096025781395];
 % solver loop
 % eps=1e-4;
 % max_iter = 50;
@@ -159,11 +121,12 @@ for theta_ind = 1:length(theta)% loop over theta angles
         
         xg(srow_idx:erow_idx8) = [xm(:,mid);hm(:,mid)];
     end
-    xg(1:num_states) = h0;
-    xg(length(xg)-num_con+1:end) = beta;
+    xg(1:num_states) = h01;
+    xg(length(xg)-num_con+1:end) = beta1;
     % iterate to solve for xg
     % test the jacobian
-    % newton iteration loop here
+%     jacobian_test(xg,Q, x0,constants)
+%     % newton iteration loop here
 %     iter = 1;
 %     g = 1;
 %     while norm(g) > 1e-3 && iter < 100
@@ -178,13 +141,13 @@ for theta_ind = 1:length(theta)% loop over theta angles
 %         fprintf('g norm %5.4f\n',norm(g));
 %         iter = iter + 1;
 %     end
-    %     jacobian_test(xg,Q, x0,constants)
+
     [xg,fval,exitflag,output] = fsolve(@(xg)objective(xg,Q, x0, constants),xg,constants.optfsolve);
     
     [x_i, h_i, xm, hm, h0, beta] = prop_seg(xg,x0,constants);
     %     plot_seg(t,x_i,h_i,xm,hm, x0, h0);
     
-    %     % calculate all the minus states
+    % calculate all the minus states
     xminus = squeeze(x_i(end,:,:));
     hminus = squeeze(h_i(end,:,:));
     % compare to the plus states

@@ -4,7 +4,7 @@
 function pcrtbp_fixed_tf
 
 constants.mu = 0.0125;
-um = 0.5;
+um = 0.75;
 constants.plot_scale = 'nondim';
 constants.l_scale = 384400; % distance of M2 from M1 (SMA) km
 
@@ -14,12 +14,15 @@ constants.ode_options = ode_options;
 optfsolve = optimoptions(@fsolve,'Display','iter','TolFun',1e-9,'TolX',1e-9);
 % tspan = [0 0.8];
 % tspan = [0 1.444];
-tspan = [0 1.3075];
+tspan = [0 1.3075]; % L1 transfer final
+% tspan = [0 0.355837553671024]; % geo transfer final
 
 % xc0 = [0.8352;0;0;0];
 % xc0 = [-0.4127;0.1691;0.3565;-1.2079];
 % xc0 = [0.8119;0;0;0.2342];
-xc0 = [0.815614054266804 0 0 0.192227407664904]';
+xc0 = [0.815614054266804 0 0 0.192227407664904]'; % L1 reach transfer
+% xc0 = [0.17541888429434552000; 0.00000000000000000003; -0.40753131851731217000; 1.71883588181152410000 ]; % geo final transfer
+
 constants.xc0 = xc0;
 
 constants.um = um;
@@ -30,7 +33,9 @@ constants.sub_opt = [cos(rand_theta); sin(rand_theta)];
 % propogate xc0 to find xcf for optimization cost
 % constants.xcf = [0.8352;0;0;0]';
 % constants.xcf = [0.2;-0.3;0;0]';
-constants.xcf = [0.927258145099694 0  -0.036751604638168   -0.369096025781395];
+constants.xcf = [0.927258145099694 0  -0.036751604638168 -0.369096025781395]; % L1 reach transfer final
+% constants.xcf = [ 0.175319307882103 -0.000000000000020 -0.282163264918425 2.717676740320596]; % geo transfer final
+
 hguess = [-0.0049;-0.0077;0.0007;-0.0060];
 [h0,fval,exitflag,output] = fsolve(@(h0)obj(h0,tspan,constants),hguess,optfsolve);
 
@@ -46,6 +51,7 @@ u = -constants.um*(hv./repmat(norm_hv,1,2))';
 u = u';
 
 figure(1)
+hold all
 plot(pos(:,1),pos(:,2),'g','linewidth',4)
 % plot_trajectories(t, [pos vel], energyconst(constants.xc0',constants.mu), figure(1), constants)
 plot(constants.xc0(1),constants.xc0(2),'ko')
