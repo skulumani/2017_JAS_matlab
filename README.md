@@ -22,3 +22,13 @@ Make sure you do not overwrite/delete files on Google drive, but rather only pul
 
 ## Code used to regenerate the plots
 
+### L1 to Moon orbit
+
+* The `.mat` files are located in `u=05` and `u=01` directories
+* Run `poincare_intersect.m` to regenerate some of the plots
+
+### Geo to L1 transfer
+
+* `geo_transfer_driver.m` will generate/load the shooting trajectories from the 
+associate mat files
+
