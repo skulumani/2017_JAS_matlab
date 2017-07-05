@@ -18,39 +18,43 @@ num_steps = 1 * 10 .^ [6, 7, 8, 9];
 width = 5;
 height = 2;
 
-e_fig = figure('PaperPositionMode','auto');
-h_fig = figure('PaperPositionMode', 'auto');
-t_fig = figure('PaperPositionMode', 'auto');
+% e_fig = figure('PaperPositionMode','auto');
+% h_fig = figure('PaperPositionMode', 'auto');
+% t_fig = figure('PaperPositionMode', 'auto');
 
 % arrays to save the data
+Ehist_ode45 = zeros(length(num_steps), 1e9);
+Ehist_trap = zeros(length(num_steps), 1e9);
 meanE_ode45 = zeros(length(num_steps),1);
 meanE_trap = zeros(length(num_steps),1);
 cputime_ode45 = zeros(length(num_steps), 1);
 cputime_trap = zeros(length(num_steps), 1);
+step_size = zeros(length(num_steps), 1);
 
 % plot trajectories and energy differences
-set(0,'CurrentFigure',e_fig)
-grid on
-hold all
-xlabel('$t$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
-ylabel('$ \Delta E$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+% set(0,'CurrentFigure',e_fig)
+% grid on
+% hold all
+% xlabel('$t$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+% ylabel('$ \Delta E$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
-set(0, 'CurrentFigure', h_fig)
-grid on 
-hold all
-xlabel('Step size','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
-ylabel('Mean $ \Delta E$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+% set(0, 'CurrentFigure', h_fig)
+% grid on 
+% hold all
+% xlabel('Step size','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+% ylabel('Mean $ \Delta E$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
-set(0, 'CurrentFigure', t_fig)
-grid on
-hold all
-xlabel('Step size', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
-ylabel('CPU Time', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
+% set(0, 'CurrentFigure', t_fig)
+% grid on
+% hold all
+% xlabel('Step size', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
+% ylabel('CPU Time', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
 
 for ii = 1:length(num_steps)
     ns = num_steps(ii);
     t_vec = linspace(t0,tf,ns);
     h = (tf-t0)/ns;
+    step_size(ii) = h;
     % propogate using ODE45
     ode45_st = tic;
     [t_ode45,state_ode45]=ode45(@(t,state)pcrtbp_ode(t,state,constants.mu),t_vec, x0,constants.ode_options);
@@ -99,25 +103,29 @@ for ii = 1:length(num_steps)
     % fprintf('VI RECT run time %5.2f sec\n',vir_end);
     fprintf('VI TRAP run time %5.2f sec\n',vit_end);
     % add to plot
-    set(0,'CurrentFigure',e_fig)
-    plot(t_ode45, abs(E_ode45-E_ode45(1)), 'r')
-    plot(t_trap, abs(E_trap-E_trap(1)), 'g')
+    % set(0,'CurrentFigure',e_fig)
+    % plot(t_ode45, abs(E_ode45-E_ode45(1)), 'r')
+    % plot(t_trap, abs(E_trap-E_trap(1)), 'g')
 
-    set(0, 'CurrentFigure', h_fig)
-    loglog(h, mean(abs(E_ode45 - E_ode45(1))), 'ro')
-    loglog(h, mean(abs(E_trap - E_trap(1))), 'gx')
+    % set(0, 'CurrentFigure', h_fig)
+    % loglog(h, mean(abs(E_ode45 - E_ode45(1))), 'ro')
+    % loglog(h, mean(abs(E_trap - E_trap(1))), 'gx')
     
-    set(0, 'CurrentFigure', t_fig)
-    loglog(h, ode45_end, 'ro')
-    loglog(h, vit_end, 'gx')
+    % set(0, 'CurrentFigure', t_fig)
+    % loglog(h, ode45_end, 'ro')
+    % loglog(h, vit_end, 'gx')
     
     % store in arrays
+    Ehist_ode45(ii,1:length(E_ode45)) = E_ode45;
+    Ehist_trap(ii,1:length(E_trap)) = E_trap;
     meanE_ode45(ii) = mean(abs(E_ode45 - E_ode45(1)));
     meanE_trap(ii) = mean(abs(E_trap - E_trap(1)));
 
     cputime_ode45(ii) = ode45_end;
     cputime_trap(ii) = vit_end;
 end
+
+save('E_comparison.mat', 'Ehist_ode45', 'Ehist_trap', 'meanE_ode45', 'meanE_trap', 'cputime_ode45', 'cputime_trap', 'num_steps', 'step_size', '-v7.3')
 % 
 % h=legend('RK45','VI TRAP');
 % set(h,'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times');
