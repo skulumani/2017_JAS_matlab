@@ -17,39 +17,63 @@ function plot_integrator_compare(filename)
         ns = num_steps(ii);
         t_vec = linspace(t0, tf, ns);
         h = (tf - t0) / ns;
+        if ii == 1
         set(0,'CurrentFigure',e_fig)
-        semilogy(t_vec, abs(Ehist_ode45(ii,1:ns)-Ehist_ode45(ii,1)), 'r')
+        semilogy(t_vec, abs(Ehist_ode45(ii,1:ns)-Ehist_ode45(ii,1)), 'r', 'DisplayName', 'ODE45')
         hold all
-        semilogy(t_vec, abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1)), 'b')
-        semilogy(t_vec, abs(Ehist_trap(ii,1:ns)-Ehist_trap(ii,1)), 'g')
+        semilogy(t_vec, abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1)), 'b','DisplayName', 'RK4')
+        semilogy(t_vec, abs(Ehist_trap(ii,1:ns)-Ehist_trap(ii,1)), 'g', 'DisplayName', 'VI')
 
         set(0, 'CurrentFigure', h_fig)
-        loglog(h, mean(abs(Ehist_ode45(ii,1:ns) - Ehist_ode45(ii,1))), 'ro')
+        loglog(h, mean(abs(Ehist_ode45(ii,1:ns) - Ehist_ode45(ii,1))), 'ro', 'DisplayName', 'ODE45')
         hold all
-        loglog(h, mean(abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1))), 'bs')
-        loglog(h, mean(abs(Ehist_trap(ii,1:ns) - Ehist_trap(ii,1))), 'gx')
+        loglog(h, mean(abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1))), 'bs', 'DisplayName', 'RK4')
+        loglog(h, mean(abs(Ehist_trap(ii,1:ns) - Ehist_trap(ii,1))), 'gx', 'DisplayName', 'VI')
 
         set(0, 'CurrentFigure', t_fig)
-        loglog(h, cputime_ode45(ii), 'ro')
+        loglog(h, cputime_ode45(ii), 'ro', 'DisplayName', 'ODE45')
         hold all
-        loglog(h, cputime_ode4(ii), 'bs')
-        loglog(h, cputime_trap(ii), 'gx')
+        loglog(h, cputime_ode4(ii), 'bs', 'DisplayName', 'RK4')
+        loglog(h, cputime_trap(ii), 'gx', 'DisplayName', 'VI')
+    else
+        set(0,'CurrentFigure',e_fig)
+        semilogy(t_vec, abs(Ehist_ode45(ii,1:ns)-Ehist_ode45(ii,1)), 'r', 'DisplayName', 'ODE45', 'HandleVisibility', 'off')
+        hold all
+        semilogy(t_vec, abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1)), 'b','DisplayName', 'RK4', 'HandleVisibility', 'off')
+        semilogy(t_vec, abs(Ehist_trap(ii,1:ns)-Ehist_trap(ii,1)), 'g', 'DisplayName', 'VI', 'HandleVisibility', 'off')
+
+        set(0, 'CurrentFigure', h_fig)
+        loglog(h, mean(abs(Ehist_ode45(ii,1:ns) - Ehist_ode45(ii,1))), 'ro', 'DisplayName', 'ODE45', 'HandleVisibility', 'off')
+        hold all
+        loglog(h, mean(abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1))), 'bs', 'DisplayName', 'RK4', 'HandleVisibility', 'off')
+        loglog(h, mean(abs(Ehist_trap(ii,1:ns) - Ehist_trap(ii,1))), 'gx', 'DisplayName', 'VI', 'HandleVisibility', 'off')
+
+        set(0, 'CurrentFigure', t_fig)
+        loglog(h, cputime_ode45(ii), 'ro', 'DisplayName', 'ODE45', 'HandleVisibility', 'off')
+        hold all
+        loglog(h, cputime_ode4(ii), 'bs', 'DisplayName', 'RK4', 'HandleVisibility', 'off')
+        loglog(h, cputime_trap(ii), 'gx', 'DisplayName', 'VI', 'HandleVisibility', 'off')
+    end
 
     end
     set(0,'CurrentFigure',e_fig)
     grid on
     xlabel('$t$ (nondim) ','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
     ylabel('$ \Delta E$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+    legend('show')
 
     set(0, 'CurrentFigure', h_fig)
     grid on 
     xlabel('$h$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
     ylabel('Mean $ \Delta E$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+    legend('show')
 
     set(0, 'CurrentFigure', t_fig)
     grid on
     xlabel('$h$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
     ylabel('CPU Time (sec)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
+    legend('show')
+
     % h=legend('RK45','VI TRAP');
     % set(h,'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times');
 
