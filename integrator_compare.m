@@ -3,6 +3,7 @@
 function [] = integrator_compare()
 
 addpath(genpath('./ode_solvers'));
+constants = crtbp_constants;
 x0 = [0.75;0;0;0.2883]';
 t0 = 0;
 tf = 200; % figure out how to dimensionalize time
