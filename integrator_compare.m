@@ -14,7 +14,7 @@ set(0,'DefaultAxesFontSize',22);
 x0 = [0.75;0;0;0.2883]';
 t0 = 0;
 tf = 200; % figure out how to dimensionalize time
-num_steps = 1 * 10 .^ [6, 7, 8, 9];
+num_steps = 1 * 10 .^ [4, 5, 6, 7];
 width = 5;
 height = 2;
 
