@@ -6,15 +6,15 @@ addpath(genpath('./ode_solvers'));
 constants = crtbp_constants;
 x0 = [0.75;0;0;0.2883]';
 t0 = 0;
-tf = 200; % figure out how to dimensionalize time
-num_steps = 1 * 10 .^ [4, 5, 6, 7];
+tf = 20; % figure out how to dimensionalize time
+num_steps = 1 * 10 .^ [6, 7, 8];
 width = 5;
 height = 2;
 
 % arrays to save the data
-Ehist_ode45 = zeros(length(num_steps), 1e7);
-Ehist_ode4 = zeros(length(num_steps), 1e7);
-Ehist_trap = zeros(length(num_steps), 1e7);
+Ehist_ode45 = zeros(length(num_steps), 1e8);
+Ehist_ode4 = zeros(length(num_steps), 1e8);
+Ehist_trap = zeros(length(num_steps), 1e8);
 meanE_ode45 = zeros(length(num_steps),1);
 meanE_ode = zeros(length(num_steps), 1);
 meanE_trap = zeros(length(num_steps),1);
