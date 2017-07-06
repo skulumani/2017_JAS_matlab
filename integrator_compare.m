@@ -78,7 +78,7 @@ for ii = 1:length(num_steps)
     
     % store in arrays
     Ehist_ode45(ii,1:length(E_ode45)) = E_ode45;
-    Ehist_ode4(ii, 1:length(E_ode4))
+    Ehist_ode4(ii, 1:length(E_ode4));
     Ehist_trap(ii,1:length(E_trap)) = E_trap;
 
     meanE_ode45(ii) = mean(abs(E_ode45 - E_ode45(1)));
