@@ -19,16 +19,16 @@ function plot_integrator_compare(filename)
         h = (tf - t0) / ns;
         if ii == 1
         set(0,'CurrentFigure',e_fig)
-        semilogy(t_vec, abs(Ehist_ode45(ii,1:ns)-Ehist_ode45(ii,1)), 'r', 'DisplayName', 'ODE45')
+        semilogy(t_vec, abs(Ehist_ode45(ii,1:ns/1000)-Ehist_ode45(ii,1)), 'r', 'DisplayName', 'ODE45')
         hold all
-        semilogy(t_vec, abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1)), 'b','DisplayName', 'RK4')
-        semilogy(t_vec, abs(Ehist_trap(ii,1:ns)-Ehist_trap(ii,1)), 'g', 'DisplayName', 'VI')
+        semilogy(t_vec, abs(Ehist_ode4(ii,1:ns/1000) - Ehist_ode4(ii,1)), 'b','DisplayName', 'RK4')
+        semilogy(t_vec, abs(Ehist_trap(ii,1:ns/1000)-Ehist_trap(ii,1)), 'g', 'DisplayName', 'VI')
 
         set(0, 'CurrentFigure', h_fig)
-        loglog(h, mean(abs(Ehist_ode45(ii,1:ns) - Ehist_ode45(ii,1))), 'ro', 'DisplayName', 'ODE45')
+        loglog(h, mean(abs(Ehist_ode45(ii,1:ns/1000) - Ehist_ode45(ii,1))), 'ro', 'DisplayName', 'ODE45')
         hold all
-        loglog(h, mean(abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1))), 'bs', 'DisplayName', 'RK4')
-        loglog(h, mean(abs(Ehist_trap(ii,1:ns) - Ehist_trap(ii,1))), 'gx', 'DisplayName', 'VI')
+        loglog(h, mean(abs(Ehist_ode4(ii,1:ns/1000) - Ehist_ode4(ii,1))), 'bs', 'DisplayName', 'RK4')
+        loglog(h, mean(abs(Ehist_trap(ii,1:ns/1000) - Ehist_trap(ii,1))), 'gx', 'DisplayName', 'VI')
 
         set(0, 'CurrentFigure', t_fig)
         loglog(h, cputime_ode45(ii), 'ro', 'DisplayName', 'ODE45')
@@ -37,16 +37,16 @@ function plot_integrator_compare(filename)
         loglog(h, cputime_trap(ii), 'gx', 'DisplayName', 'VI')
     else
         set(0,'CurrentFigure',e_fig)
-        semilogy(t_vec, abs(Ehist_ode45(ii,1:ns)-Ehist_ode45(ii,1)), 'r', 'DisplayName', 'ODE45', 'HandleVisibility', 'off')
+        semilogy(t_vec, abs(Ehist_ode45(ii,1:ns/1000)-Ehist_ode45(ii,1)), 'r', 'DisplayName', 'ODE45', 'HandleVisibility', 'off')
         hold all
-        semilogy(t_vec, abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1)), 'b','DisplayName', 'RK4', 'HandleVisibility', 'off')
-        semilogy(t_vec, abs(Ehist_trap(ii,1:ns)-Ehist_trap(ii,1)), 'g', 'DisplayName', 'VI', 'HandleVisibility', 'off')
+        semilogy(t_vec, abs(Ehist_ode4(ii,1:ns/1000) - Ehist_ode4(ii,1)), 'b','DisplayName', 'RK4', 'HandleVisibility', 'off')
+        semilogy(t_vec, abs(Ehist_trap(ii,1:ns/1000)-Ehist_trap(ii,1)), 'g', 'DisplayName', 'VI', 'HandleVisibility', 'off')
 
         set(0, 'CurrentFigure', h_fig)
-        loglog(h, mean(abs(Ehist_ode45(ii,1:ns) - Ehist_ode45(ii,1))), 'ro', 'DisplayName', 'ODE45', 'HandleVisibility', 'off')
+        loglog(h, mean(abs(Ehist_ode45(ii,1:ns/1000) - Ehist_ode45(ii,1))), 'ro', 'DisplayName', 'ODE45', 'HandleVisibility', 'off')
         hold all
-        loglog(h, mean(abs(Ehist_ode4(ii,1:ns) - Ehist_ode4(ii,1))), 'bs', 'DisplayName', 'RK4', 'HandleVisibility', 'off')
-        loglog(h, mean(abs(Ehist_trap(ii,1:ns) - Ehist_trap(ii,1))), 'gx', 'DisplayName', 'VI', 'HandleVisibility', 'off')
+        loglog(h, mean(abs(Ehist_ode4(ii,1:ns/1000) - Ehist_ode4(ii,1))), 'bs', 'DisplayName', 'RK4', 'HandleVisibility', 'off')
+        loglog(h, mean(abs(Ehist_trap(ii,1:ns/1000) - Ehist_trap(ii,1))), 'gx', 'DisplayName', 'VI', 'HandleVisibility', 'off')
 
         set(0, 'CurrentFigure', t_fig)
         loglog(h, cputime_ode45(ii), 'ro', 'DisplayName', 'ODE45', 'HandleVisibility', 'off')

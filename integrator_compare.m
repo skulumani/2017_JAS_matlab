@@ -1,4 +1,4 @@
-% 25 Feb 2015 - script to compare performance of variational integrator and
+% 27 Feb 2015 - script to compare performance of variational integrator and
 % ODE45 and normal euler integration
 function [] = integrator_compare()
 
@@ -77,9 +77,9 @@ for ii = 1:length(num_steps)
     fprintf('VI TRAP run time %5.2f sec\n',vit_end);
     
     % store in arrays
-    Ehist_ode45(ii,1:length(E_ode45)) = E_ode45;
-    Ehist_ode4(ii, 1:length(E_ode4));
-    Ehist_trap(ii,1:length(E_trap)) = E_trap;
+    Ehist_ode45(ii,1:1000:length(E_ode45)) = E_ode45;
+    Ehist_ode4(ii, 1:1000:length(E_ode4));
+    Ehist_trap(ii,1:1000:length(E_trap)) = E_trap;
 
     meanE_ode45(ii) = mean(abs(E_ode45 - E_ode45(1)));
     meanE_ode4(ii) = mean(abs(E_ode4 - E_ode4(1)));
