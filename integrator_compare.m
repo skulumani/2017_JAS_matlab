@@ -6,8 +6,8 @@ addpath(genpath('./ode_solvers'));
 constants = crtbp_constants;
 x0 = [0.75;0;0;0.2883]';
 t0 = 0;
-tf = 20; % figure out how to dimensionalize time
-num_steps = 1 * 10 .^ [6, 7, 8, 9];
+tf = 200; % figure out how to dimensionalize time
+num_steps = 1 * 10 .^ [7, 8, 9];
 width = 5;
 height = 2;
 
@@ -30,12 +30,11 @@ for ii = 1:length(num_steps)
     step_size(ii) = h;
     % propogate using ODE45
     ode45_st = tic;
-    [t_ode45,state_ode45]=ode45(@(t,state)pcrtbp_ode(t,state,constants.mu),t_vec, x0,constants.ode_options);
+    [~,state_ode45]=ode45(@(t,state)pcrtbp_ode(t,state,constants.mu),t_vec, x0,constants.ode_options);
     ode45_end = toc(ode45_st);
     
     % propogate using ODE4
     ode4_st = tic;
-    t_ode4 = t_vec;
     state_ode4 =ode4(@(t,state)pcrtbp_ode(t,state,constants.mu),t_vec, x0);
     ode4_end = toc(ode4_st);
     
@@ -46,16 +45,16 @@ for ii = 1:length(num_steps)
     
     % use trapezoidal mode
     vit_st = tic;
-    [t_trap, state_trap] = pcrtbp_variational(x0,t0,tf, 'trap', ns,constants);
+    [~, state_trap] = pcrtbp_variational(x0,t0,tf, 'trap', ns,constants);
     vit_end = toc(vit_st);
     
     % compute the energy difference
     % calculate jacobi energies for both
-    [E_ode45] = energyconst(state_ode45,constants.mu);
-    [E_ode4] = energyconst(state_ode4,constants.mu);
+    [E_ode45] = energyconst(state_ode45(1:1000:end, :),constants.mu);
+    [E_ode4] = energyconst(state_ode4(1:1000:end, :),constants.mu);
     % [E_rect] = energyconst(state_rect,constants.mu);
-    [E_trap] = energyconst(state_trap,constants.mu);
-    
+    [E_trap] = energyconst(state_trap(1:1000:end, :),constants.mu);
+     
     % energy diff
     fprintf('\ntf = %5.2f nondim = %5.2e sec = %5.2f yrs\n', tf, tf*constants.t_scale, tf*constants.t_scale/86400/365);
     fprintf('N = %5.2e steps  \n', ns);
@@ -77,13 +76,15 @@ for ii = 1:length(num_steps)
     fprintf('VI TRAP run time %5.2f sec\n',vit_end);
     
     % store in arrays
-    Ehist_ode45(ii,1:length(E_ode45)/1000) = E_ode45(1:1000:end);
-    Ehist_ode4(ii, 1:length(E_ode4)/1000) = E_ode4(1:1000:end);
-    Ehist_trap(ii,1:length(E_trap)/1000) = E_trap(1:1000:end);
+    Ehist_ode45(ii,1:length(E_ode45)) = E_ode45;
+    Ehist_ode4(ii, 1:length(E_ode4)) = E_ode4;
+    Ehist_trap(ii,1:length(E_trap)) = E_trap;
 
     meanE_ode45(ii) = mean(abs(E_ode45 - E_ode45(1)));
     meanE_ode4(ii) = mean(abs(E_ode4 - E_ode4(1)));
     meanE_trap(ii) = mean(abs(E_trap - E_trap(1)));
+    
+    clear E_ode45 E_ode4 E_trap state_trap state_ode45 state_ode4
 
     cputime_ode45(ii) = ode45_end;
     cputime_ode4(ii) = ode4_end;
