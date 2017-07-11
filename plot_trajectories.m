@@ -52,6 +52,7 @@ primary_2 = l_scale* [1-mu 0 0];
 set(0,'CurrentFigure',fig_handle)
 hold all
 grid on
+axis equal
 title_string = ['Trajectory ($\mu = $' num2str(mu) ')'];
 title(title_string,'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 xlabel(['X' units_label],'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')

@@ -6,7 +6,7 @@ function plot_integrator_compare(filename)
     t0 = 0;
     tf = 200; % figure out how to dimensionalize time
     set(0,'DefaultAxesFontSize',22);
-
+    traj_fig = figure('PaperPositionMode', 'auto'); % trajectory figure
     e_fig = figure('PaperPositionMode','auto'); % energy history
     h_fig = figure('PaperPositionMode', 'auto'); % mean \Delta E
     t_fig = figure('PaperPositionMode', 'auto'); % cpu time
@@ -142,6 +142,17 @@ function plot_integrator_compare(filename)
 
     set(hn_legend,'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times');
     set(tn_legend,'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times');
+
+    % plot the trajectory figure
+    constants = crtbp_constants;
+    x0 = [0.75;0;0;0.2883]';
+    t0 = 0;
+    tf = 200; % figure out how to dimensionalize time
+
+    % propogate using ODE45
+    [t_ode45,state_ode45]=ode45(@(t,state)pcrtbp_ode(t,state,constants.mu),linspace(t0, tf, 1e6), x0,constants.ode_options);
+    
+    plot_trajectories(t_vec, state_ode45, Ehist_ode45(1), traj_fig, constants)
     % print(e_fig,'-dpsc2', 'energy.eps')
     % print(traj_fig,'-dpsc2', 'trajectory.eps')
     % print(comp_fig,'-dpsc2', 'components.eps')
