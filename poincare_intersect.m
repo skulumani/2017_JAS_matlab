@@ -150,3 +150,20 @@ plot(x_int,xd_int,'g*','markersize',10)
 min_reach = sol_output(round(jout));
 min_reach.constants = sol_output(1).constants;
 % pcrtbp_shooting_min(min_reach)
+
+% plot the data from min reache
+
+% plot the control input (costates)
+for jj = 1:num_seg
+    x_i = min_reach.x_i;
+    h_i = min_reach.h_i;
+    start_idx = (jj-1)*num_steps/num_seg+1;
+    end_idx = start_idx-1+num_steps/num_seg;
+    time(start_idx:end_idx) = min_reach.t(jj,:);
+    state(start_idx:end_idx,:) = x_i(:,:,jj);
+    costate(start_idx:end_idx,:) = h_i(:,:,jj);
+    control(start_idx:end_idx,:) = -min_reach.constants.um * costate(start_idx:end_idx,3:4)./repmat(sqrt(sum(costate(start_idx:end_idx,3:4).^2, 2)),1, 2);
+end
+
+figure
+plot(time, control)
