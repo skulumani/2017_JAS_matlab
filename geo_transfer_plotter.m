@@ -15,23 +15,23 @@ set(0,'DefaultAxesFontSize',22);
 traj_fig= figure(1);
 hold on
 
-xlabel('x','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
-ylabel('y','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+xlabel('$x$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+ylabel('$y$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 title('Trajectory','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
 
 poincare_fig = figure(2);
 hold all
 grid on
-xlabel('x','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
-ylabel('$\dot{x}$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+xlabel('$x$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+ylabel('$\dot{x}$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 title('Poincare Section','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
 control_fig = figure(3);
 hold all
 grid on
-xlabel('t','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
-ylabel('$u$','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+xlabel('t (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+ylabel('$u$ (Newton)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 title('Control Input','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
 %% INITIAL load initial condition (geostationary orbit)
@@ -120,6 +120,7 @@ end
 load('geo_transfer_final.mat')
 state_all = [state_all;state(:,1:4)];
 control_all = [control_all;u];
+control_all = control_all * constants.a_scale * constants.sc_mass * constants.km2meter;
 time_all = [time_all;t+repmat(max_time,length(t),1)];
 
 set(0,'CurrentFigure',traj_fig);
