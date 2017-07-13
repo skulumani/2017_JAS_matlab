@@ -31,7 +31,7 @@ control_fig = figure(3);
 hold all
 grid on
 xlabel('t (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
-ylabel('$u$ (Newton)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+ylabel('$u$ (N)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 title('Control Input','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
 %% INITIAL load initial condition (geostationary orbit)
