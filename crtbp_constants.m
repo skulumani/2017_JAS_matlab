@@ -20,6 +20,9 @@ constants.n_scale = 2*pi/constants.t_scale;% mean motion of M2 about M1 rad/sec
 constants.v_scale = constants.n_scale*constants.l_scale; % mean velocity of M2 about M1 km/sec
 % nondimensional to dimensional - adim = a_scale*a_nondim
 constants.a_scale = constants.n_scale*constants.n_scale*constants.l_scale;
+constants.sc_mass = 500; % kilogram mass of spacecraft
+constants.km2meter = 1000/1; % convert kilometers to meters
+
 constants.plot_scale = 'nondim'; % nondim or dim 
 constants.mu = mu;
 l_point = 1;

@@ -20,11 +20,9 @@ ux_nondim = controls{2};
 
 % now dimensionalize the control input
 
-sc_mass = 500; % kilogram mass of spacecraft
-km2meter = 1000/1; % convert kilometers to meters
 
-ux_dim = ux_nondim * constants.a_scale * km2meter * sc_mass; % control force in Newtons
-uy_dim = uy_nondim * constants.a_scale * km2meter * sc_mass; % control force in newtons
+ux_dim = ux_nondim * constants.a_scale * constants.km2meter * constants.sc_mass; % control force in Newtons
+uy_dim = uy_nondim * constants.a_scale * constants.km2meter * constants.sc_mass; % control force in newtons
 
 set(0,'DefaultAxesFontSize',22);
 figure('PaperPositionMode', 'auto');
