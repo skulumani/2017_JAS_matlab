@@ -12,6 +12,7 @@ crossing_sel = 3;
 % store all manifold poincare section states to compare with the
 % reachability set
 manifold_poincare = zeros(constants.manifold_steps,4);
+rm_index = [];
 % plot the stable manifold of L1
 for ii = 1:1:constants.manifold_steps
     uspms = L1_us_manifold_pos_state(:,:,ii);
@@ -47,7 +48,7 @@ for ii = 1:1:constants.manifold_steps
     % for U1 section y = 0 x < 0
     % don't plot trajectories if final state goes past the lagrange point
     if snm_cross_state(1) > 0.85
-        
+       rm_index = [rm_index; ii] ;
     else
         set(0,'CurrentFigure',traj_fig)
         plot(snms(1:snms_cross_index,1),snms(1:snms_cross_index,2),'g')
@@ -68,6 +69,7 @@ end
 % line([0.8352 1.1],[0 0],'Linewidth',4,'Color','k')
 % Plot Poincare Section
 
+manifold_poincare(rm_index,:) = [];
 
 %
 %
