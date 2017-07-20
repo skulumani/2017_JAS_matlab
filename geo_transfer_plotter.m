@@ -3,7 +3,7 @@
 
 clc
 close all
-
+addpath(genpath('./'))
 constants = crtbp_constants;
 constants.control_switch = 'off';
 
@@ -161,6 +161,9 @@ time_all = [time_all;t+repmat(max_time,length(t),1)];
 set(0,'CurrentFigure',traj_fig);
 plot(state(:,1),state(:,2),'r')
 
+% draw the poincare section black line
+line([-constants.mu 0.835],[0 0],'color','k','linewidth',3)
+
 set(0,'CurrentFigure',control_fig);
 plot(time_all,control_all)
 control_legend = legend('$u_x$','$u_y$');
@@ -185,18 +188,34 @@ plot_trajectories(t, state, constants.e_desired, traj_fig, constants)
 set(0, 'CurrentFigure', stage_traj_figs(8))
 plot(state_all(:, 1), state_all(:, 2), 'r')
 plot_trajectories(t, state, constants.e_desired, stage_traj_figs(8), constants)
-% draw the poincare section black line
-line([-constants.mu 0.835],[0 0],'color','k','linewidth',3)
 
 for ii = 1:8
     set(0, 'CurrentFigure', stage_traj_figs(ii))
+    set(gcf, 'PaperPositionMode', 'auto');
     title(sprintf('Trajectory Stage %d', ii),'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
+    % draw the poincare section black line
+    line([-constants.mu 0.835],[0 0],'color','k','linewidth',3)
     % save the figures
-    savefig(sprintf('./journal_figures/geo_transfer/stage%d_trajectory.fig', ii))
+    % savefig(sprintf('./journal_figures/geo_transfer/stage%d_trajectory.fig', ii))
     saveas(stage_traj_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_trajectory.eps', ii), 'epsc')
-    
+    % export_fig(stage_traj_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_trajectory.eps', ii), '-eps', '-q101')
+    % print(stage_traj_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_trajectory.eps', ii), '-depsc', '-r800')
+
+    % now zoom in and save
+    set(0, 'CurrentFigure', stage_traj_figs(ii))
+    set(gcf, 'PaperPositionMode', 'auto');
+    axis([-0.25, 0.25, -0.25, 0.25])
+    % savefig(sprintf('./journal_figures/geo_transfer/stage%d_trajectory_zoom.fig', ii))
+    saveas(stage_traj_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_trajectory_zoom.eps', ii), 'epsc')
+    % export_fig(stage_traj_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_trajectory_zoom.eps', ii), '-eps', '-q101')
+
+    % print(gcf, sprintf('./journal_figures/geo_transfer/stage%d_trajectory_zoom.eps', ii), '-depsc', '-r800')
+
     set(0, 'CurrentFigure', stage_poincare_figs(ii))
-    savefig(sprintf('./journal_figures/geo_transfer/stage%d_poincare.fig', ii))
+    set(gcf, 'PaperPositionMode', 'auto');
+    % savefig(sprintf('./journal_figures/geo_transfer/stage%d_poincare.fig', ii))
     saveas(stage_poincare_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_poincare.eps', ii), 'epsc')
+    % export_fig(stage_poincare_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_poincare.eps', ii), '-eps', '-q101')
+    % print(stage_poincare_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_poincare.eps', ii), '-depsc', '-r800')
 end
