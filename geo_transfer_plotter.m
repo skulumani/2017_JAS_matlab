@@ -18,7 +18,6 @@ xlabel('$x$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'
 ylabel('$y$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 title('Trajectory','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
-
 poincare_fig = figure(2);
 hold all
 grid on
@@ -34,17 +33,17 @@ ylabel('$u$ (N)','interpreter','latex','FontUnits','points','FontSize',22,'FontN
 title('Control Input','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
 % figure for each stage
-% stage_traj_figs = [];
+stage_traj_figs = [];
 stage_poincare_figs = [];
 % stage_control_figs = [];
 for ii = 1:8
 
-    % stf = figure();
-    % hold all
-    % grid on
-    % xlabel('$x$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
-    % ylabel('$y$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
-    % title('Trajectory','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+    stf = figure();
+    hold all
+    grid on
+    xlabel('$x$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+    ylabel('$y$ (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+    title(sprintf('Trajectory Stage %d', ii),'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
     spf = figure();
     hold all
@@ -60,7 +59,7 @@ for ii = 1:8
     % ylabel('$u$ (N)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
     % title(sprintf('Control Input Stage %d', ii),'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
     
-    % stage_traj_figs = [stage_traj_figs; stf];
+    stage_traj_figs = [stage_traj_figs; stf];
     stage_poincare_figs = [stage_poincare_figs; spf];
     % stage_control_figs = [stage_control_figs; scf];
 end
@@ -70,7 +69,9 @@ end
 
 %% TARGET load the stable manifold ( target of the transfer)
 manifold_poincare = manifold_parse(traj_fig, poincare_fig);
-
+for ii = 1:8
+    temp = manifold_parse(stage_traj_figs(ii), stage_poincare_figs(ii));
+end
 % generate the target Poincare section
 %% loop over the mat files that hold the reachability transfer iterations
 reach_switch_vec = {'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'min_dist' 'max_x'}; 
@@ -122,8 +123,16 @@ for iter = 1:7
         plot(reach_struct(jj).reach_end(1), reach_struct(jj).reach_end(3), 'rs', 'markersize', 8, 'linewidth', 2)
     end
     
-    plot(manifold_poincare(:, 1), manifold_poincare(:, 3), 'g.', 'markersize', 20)
+    % plot(manifold_poincare(:, 1), manifold_poincare(:, 3), 'g.', 'markersize', 20)
     plot(min_reach(1),min_reach(3),'k.','Markersize',20);
+    
+    if iter == 1
+        plot_trajectories(t,[state_all; min_traj(:, 1:4)], constants.e_desired, stage_traj_figs(iter), constants)
+    else
+        set(0, 'CurrentFigure', stage_traj_figs(iter))
+        plot(state_all(:, 1), state_all(:, 2), 'r')
+        plot_trajectories(t, min_traj(:, 1:4), constants.e_desired, stage_traj_figs(iter), constants)
+    end
     %     if iter == 3
 %         set(0,'CurrentFigure',poincare_fig)
 %         for ii = 1:length(reach_struct)
@@ -173,5 +182,21 @@ opt_trans = state_all(end,1:4);
 % set(0,'CurrentFigure',traj_fig);
 plot_trajectories(t, state, constants.e_desired, traj_fig, constants)
 
+set(0, 'CurrentFigure', stage_traj_figs(8))
+plot(state_all(:, 1), state_all(:, 2), 'r')
+plot_trajectories(t, state, constants.e_desired, stage_traj_figs(8), constants)
 % draw the poincare section black line
 line([-constants.mu 0.835],[0 0],'color','k','linewidth',3)
+
+for ii = 1:8
+    set(0, 'CurrentFigure', stage_traj_figs(ii))
+    title(sprintf('Trajectory Stage %d', ii),'interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
+
+    % save the figures
+    savefig(sprintf('./journal_figures/geo_transfer/stage%d_trajectory.fig', ii))
+    saveas(stage_traj_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_trajectory.eps', ii), 'epsc')
+    
+    set(0, 'CurrentFigure', stage_poincare_figs(ii))
+    savefig(sprintf('./journal_figures/geo_transfer/stage%d_poincare.fig', ii))
+    saveas(stage_poincare_figs(ii), sprintf('./journal_figures/geo_transfer/stage%d_poincare.eps', ii), 'epsc')
+end
