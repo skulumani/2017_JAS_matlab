@@ -4,7 +4,7 @@ function [] = integrator_compare()
 
 addpath(genpath('./ode_solvers'));
 constants = crtbp_constants;
-x0 = [0.75;0;0;0.2883]';
+x0 = [0.75;0;0.2;0]';
 t0 = 0;
 tf = 200; % figure out how to dimensionalize time
 num_steps = 1 * 10 .^ [6, 7, 8];
@@ -30,7 +30,7 @@ for ii = 1:length(num_steps)
     step_size(ii) = h;
     % propogate using ODE45
     ode45_st = tic;
-    [~,state_ode45]=ode45(@(t,state)pcrtbp_ode(t,state,constants.mu),t_vec, x0,constants.ode_options);
+    [~,state_ode45]=ode45(@(t,state)pcrtbp_ode(t,state,constants.mu),t_vec, x0, odeset('RelTol',1/ns,'AbsTol',1/ns));
     ode45_end = toc(ode45_st);
     
     % propogate using ODE4
