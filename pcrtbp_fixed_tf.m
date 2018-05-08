@@ -20,6 +20,7 @@ tspan = [0 1.3075]; % L1 transfer final
 % xc0 = [0.8352;0;0;0];
 % xc0 = [-0.4127;0.1691;0.3565;-1.2079];
 % xc0 = [0.8119;0;0;0.2342];
+
 % xc0 = [0.815614054266804 0 0 0.192227407664904]'; % L1 reach transfer
 % xc0 = [0.17541888429434552000; 0.00000000000000000003; -0.40753131851731217000; 1.71883588181152410000 ]; % geo final transfer
 
@@ -33,6 +34,7 @@ constants.sub_opt = [cos(rand_theta); sin(rand_theta)];
 % propogate xc0 to find xcf for optimization cost
 % constants.xcf = [0.8352;0;0;0]';
 % constants.xcf = [0.2;-0.3;0;0]';
+
 % constants.xcf = [0.927258145099694 0  -0.036751604638168 -0.369096025781395]; % L1 reach transfer final
 % constants.xcf = [ 0.175319307882103 -0.000000000000020 -0.282163264918425 2.717676740320596]; % geo transfer final
 
