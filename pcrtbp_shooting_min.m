@@ -7,6 +7,7 @@ clc
 
 % constants and problem setup
 constants = min_reach.constants;
+constants.um = 0.75;
 constants.optfsolve = optimoptions(@fsolve,'Display','iter-detailed','TolFun',1e-6,'TolX',1e-6,...
     'Algorithm', 'trust-region-reflective','Jacobian','off',...
     'DerivativeCheck','off');
@@ -110,7 +111,7 @@ sol_output.diff_h = diff_h;
 sol_output.costate_necc = hminus(:,end) - ( xminus(:,end) - constants.xt');
 sol_output.t = t;
 sol_output.constants = constants;
-sol_output.x0 = x0;
+sol_output.x0 = x0_i;
 
 keyboard
 plot_output(sol_output,constants)
