@@ -1,7 +1,7 @@
 % 16 dec 14 - modfying for use as optimal control code to a fixed final
 % state
 
-function pcrtbp_fixed_tf
+function [] = pcrtbp_fixed_tf(xc0, xcf)
 
 constants.mu = 0.0125;
 um = 0.75;
@@ -60,10 +60,10 @@ plot(constants.xcf(1),constants.xcf(2),'ko')
 % quiver(pos(1:5:end,1),pos(1:5:end,2),u(1:5:end,1),u(1:5:end,2));
 J=1/2*(state(end,1:4)' - constants.xcf(1:4)')'*[eye(2,2) zeros(2,2);zeros(2,2) zeros(2,2)]*(state(end,1:4)' - constants.xcf(1:4)')
 
-% figure 
-% grid on
-% hold on
-% % plot(t, u(:,1), t, u(:,2))
+figure 
+grid on
+hold on
+plot(t, u(:,1), t, u(:,2))
 % plot(t,hv(:,1),t, hv(:,2))
 end
 
