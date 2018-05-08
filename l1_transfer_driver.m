@@ -109,7 +109,6 @@ plot(x_int,xd_int,'g*','markersize',10)
 min_reach = sol_output(round(jout));
 min_reach.constants = crtbp_constants();
 
-
 % plot the control input (costates)
 for jj = 1:num_seg
     x_i = min_reach.x_i;
@@ -123,4 +122,5 @@ for jj = 1:num_seg
 end
 
 % now define a terminal state to get to
-xf_desired = min_reach.x_i(end, :, end);
+xf_desired = min_state(end, :);
+xf_desired(4) = ydot; 
