@@ -98,8 +98,6 @@ options_cross = odeset('RelTol',constants.RelTol,'AbsTol',constants.AbsTol,'Even
 plot_trajectories(t, state, energyconst(moon_x0',constants.mu), traj_fig, constants)
 
 
-
-
 % plot the x axis crossing for the Moon bounded orbit
 set(0,'CurrentFigure',poincare_fig);
 plot(cross_state(:,1),cross_state(:,3),'b.')
@@ -163,20 +161,31 @@ for jj = 1:num_seg
     h_i = min_reach.h_i;
     start_idx = (jj-1)*num_steps/num_seg+1;
     end_idx = start_idx-1+num_steps/num_seg;
-    time(start_idx:end_idx) = min_reach.t(jj,:);
-    state(start_idx:end_idx,:) = x_i(:,:,jj);
-    costate(start_idx:end_idx,:) = h_i(:,:,jj);
-    control(start_idx:end_idx,:) = -0.75 * costate(start_idx:end_idx,3:4)./repmat(sqrt(sum(costate(start_idx:end_idx,3:4).^2, 2)),1, 2);
+    min_time(start_idx:end_idx) = min_reach.t(jj,:);
+    min_state(start_idx:end_idx,:) = x_i(:,:,jj);
+    min_costate(start_idx:end_idx,:) = h_i(:,:,jj);
+    min_control(start_idx:end_idx,:) = -0.75 * costate(start_idx:end_idx,3:4)./repmat(sqrt(sum(costate(start_idx:end_idx,3:4).^2, 2)),1, 2);
 end
 
 % dimensionalize teh control
-control_dim = control * min_reach.constants.a_scale * min_reach.constants.km2meter * min_reach.constants.sc_mass;
+control_dim = min_control * min_reach.constants.a_scale * min_reach.constants.km2meter * min_reach.constants.sc_mass;
 
 control_fig = figure();
-plot(time, control_dim)
+hold all;
+grid on;
+plot(min_time, control_dim(:, 1), 'b', 'DisplayName', '$u_x$')
+plot(min_time, control_dim(:, 2), 'r', 'DisplayName', '$u_y$')
 xlabel("$t$ (nondim)", 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
 ylabel("$u$ (N)", 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
 c_legend = legend('show');
 
 set(c_legend, 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
 
+% plot the optimal solution 
+set(0, 'CurrentFigure', traj_fig)
+plot(min_state(:, 1), min_state(:, 2), 'g')
+
+% compute teh jacobi energy integral for this minimum solution
+min_jacobi = energyconst(min_state, min_reach.constants.mu);
+figure();
+plot(min_time, min_jacobi)
