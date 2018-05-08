@@ -7,11 +7,15 @@ clear all
 clc 
 close all
 
+font_size = 22;
+font_name = 'Times';
+
 % load L1 reachable set
 % load ./u=01/l1_reach_second
 % load ./u=01/l1_reach_first.mat
 % load ./u=01/l1_reach_third.mat
 load ./u=05/l1_reach_first.mat
+% load ./u=05/l1_reach_final.mat
 % load l1_reach_earth_u05
 
 constants = sol_output(1).constants;
@@ -148,7 +152,7 @@ plot(x_int,xd_int,'g*','markersize',10)
 [ydot] = energyfcn(x_int, 0, xd_int, constants.mu, energyconst(moon_x0',constants.mu));
 
 min_reach = sol_output(round(jout));
-min_reach.constants = sol_output(1).constants;
+min_reach.constants = crtbp_constants();
 % pcrtbp_shooting_min(min_reach)
 
 % plot the data from min reache
@@ -162,8 +166,17 @@ for jj = 1:num_seg
     time(start_idx:end_idx) = min_reach.t(jj,:);
     state(start_idx:end_idx,:) = x_i(:,:,jj);
     costate(start_idx:end_idx,:) = h_i(:,:,jj);
-    control(start_idx:end_idx,:) = -min_reach.constants.um * costate(start_idx:end_idx,3:4)./repmat(sqrt(sum(costate(start_idx:end_idx,3:4).^2, 2)),1, 2);
+    control(start_idx:end_idx,:) = -0.75 * costate(start_idx:end_idx,3:4)./repmat(sqrt(sum(costate(start_idx:end_idx,3:4).^2, 2)),1, 2);
 end
 
-figure
-plot(time, control)
+% dimensionalize teh control
+control_dim = control * min_reach.constants.a_scale * min_reach.constants.km2meter * min_reach.constants.sc_mass;
+
+control_fig = figure();
+plot(time, control_dim)
+xlabel("$t$ (nondim)", 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel("$u$ (N)", 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+c_legend = legend('show');
+
+set(c_legend, 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
