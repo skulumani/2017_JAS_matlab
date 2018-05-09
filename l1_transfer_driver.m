@@ -4,6 +4,8 @@ clear all
 clc
 close all
 
+font_size = 22;
+font_name = 'Times';
 % load the reachable set
 load("./u=05/l1_reach_first.mat")
 
@@ -106,6 +108,7 @@ plot(x_int,xd_int,'g*','markersize',10)
 % calculate the target state to control towards
 [ydot] = energyfcn(x_int, 0, xd_int, constants.mu, energyconst(moon_x0',constants.mu));
 
+
 min_reach = sol_output(round(jout));
 min_reach.constants = crtbp_constants();
 
@@ -123,4 +126,30 @@ end
 
 % now define a terminal state to get to
 xf_desired = min_state(end, :);
-xf_desired(4) = ydot; 
+xf_desired(4) = -ydot; 
+
+% now perform an optimal control with fixed tf to the desired target on reacable set
+[t_optimal, state_optimal, control_optimal] = pcrtbp_fixed_tf(min_state(1, :)', xf_desired,min_time(end));
+
+% dimensionalize teh control
+control_dim = control_optimal * min_reach.constants.a_scale * min_reach.constants.km2meter * min_reach.constants.sc_mass;
+
+control_fig = figure();
+hold all;
+grid on;
+plot(t_optimal, control_dim(:, 1), 'b', 'DisplayName', '$u_x$')
+plot(t_optimal, control_dim(:, 2), 'r', 'DisplayName', '$u_y$')
+xlabel("$t$ (nondim)", 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel("$u$ (N)", 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+c_legend = legend('show');
+
+set(c_legend, 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
+% plot the optimal solution 
+set(0, 'CurrentFigure', traj_fig)
+plot(state_optimal(:, 1), state_optimal(:, 2), 'g')
+
+% compute teh jacobi energy integral for this minimum solution
+min_jacobi = energyconst(state_optimal(:, 1:4), min_reach.constants.mu);
+figure();
+plot(t_optimal, min_jacobi)
