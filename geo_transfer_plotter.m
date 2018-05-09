@@ -33,6 +33,13 @@ xlabel('t (nondim)','interpreter','latex','FontUnits','points','FontSize',22,'Fo
 ylabel('$u$ (N)','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 title('Control Input','interpreter','latex','FontUnits','points','FontSize',22,'FontName','Times')
 
+jacobi_fig = figure();
+hold all
+grid on 
+xlabel('$t$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
+ylabel('$E$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
+title('Jacobi Energy', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', 22, 'FontName', 'Times')
+
 % figure for each stage
 stage_traj_figs = [];
 stage_poincare_figs = [];
@@ -189,6 +196,11 @@ plot_trajectories(t, state, constants.e_desired, traj_fig, constants)
 set(0, 'CurrentFigure', stage_traj_figs(8))
 plot(state_all(:, 1), state_all(:, 2), 'r')
 plot_trajectories(t, state, constants.e_desired, stage_traj_figs(8), constants)
+
+% compute the jacobi energy for the whole transfer and plot
+jacobi_energy = energyconst(state_all, constants.mu);
+set(0, 'CurrentFigure', jacobi_fig)
+plot(time_all, jacobi_energy)
 
 keyboard
 for ii = 1:8
