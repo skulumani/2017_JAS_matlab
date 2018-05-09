@@ -151,5 +151,12 @@ plot(state_optimal(:, 1), state_optimal(:, 2), 'g')
 
 % compute teh jacobi energy integral for this minimum solution
 min_jacobi = energyconst(state_optimal(:, 1:4), min_reach.constants.mu);
-figure();
+jacobi_fig = figure();
+hold all
+grid on
 plot(t_optimal, min_jacobi)
+title('Jacobi Energy', 'interpreter', 'latex', 'FontSize', font_size, 'FontName', font_name);
+xlabel('$t$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel('$E$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
+

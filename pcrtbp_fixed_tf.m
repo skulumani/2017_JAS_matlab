@@ -57,20 +57,20 @@ norm_hv = sqrt(sum(hv.^2,2));
 u = -constants.um*(hv./repmat(norm_hv,1,2))';
 u = u';
 
-figure(1)
-hold all
-plot(pos(:,1),pos(:,2),'g','linewidth',4)
+% figure(1)
+% hold all
+% plot(pos(:,1),pos(:,2),'g','linewidth',4)
 % plot_trajectories(t, [pos vel], energyconst(constants.xc0',constants.mu), figure(1), constants)
-plot(constants.xc0(1),constants.xc0(2),'ko')
-plot(constants.xcf(1),constants.xcf(2),'ko')
+% plot(constants.xc0(1),constants.xc0(2),'ko')
+% plot(constants.xcf(1),constants.xcf(2),'ko')
 
 % quiver(pos(1:5:end,1),pos(1:5:end,2),u(1:5:end,1),u(1:5:end,2));
 J=1/2*(state(end,1:4)' - constants.xcf(1:4)')'*[eye(2,2) zeros(2,2);zeros(2,2) zeros(2,2)]*(state(end,1:4)' - constants.xcf(1:4)')
 
-figure 
-grid on
-hold on
-plot(t, u(:,1), t, u(:,2))
+% figure 
+% grid on
+% hold on
+% plot(t, u(:,1), t, u(:,2))
 % plot(t,hv(:,1),t, hv(:,2))
 end
 
