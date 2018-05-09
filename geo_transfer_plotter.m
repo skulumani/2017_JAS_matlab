@@ -3,6 +3,7 @@
 
 clc
 close all
+clear all
 addpath(genpath('./'))
 constants = crtbp_constants;
 constants.control_switch = 'off';
@@ -127,11 +128,11 @@ for iter = 1:7
     plot(min_reach(1),min_reach(3),'k.','Markersize',20);
     
     if iter == 1
-        plot_trajectories(t,[state_all; min_traj(:, 1:4)], constants.e_desired, stage_traj_figs(iter), constants)
+        plot_trajectories(min_time,[state_all; min_traj(:, 1:4)], constants.e_desired, stage_traj_figs(iter), constants)
     else
         set(0, 'CurrentFigure', stage_traj_figs(iter))
         plot(state_all(:, 1), state_all(:, 2), 'r')
-        plot_trajectories(t, min_traj(:, 1:4), constants.e_desired, stage_traj_figs(iter), constants)
+        plot_trajectories(min_time, min_traj(:, 1:4), constants.e_desired, stage_traj_figs(iter), constants)
     end
     %     if iter == 3
 %         set(0,'CurrentFigure',poincare_fig)
@@ -189,6 +190,7 @@ set(0, 'CurrentFigure', stage_traj_figs(8))
 plot(state_all(:, 1), state_all(:, 2), 'r')
 plot_trajectories(t, state, constants.e_desired, stage_traj_figs(8), constants)
 
+keyboard
 for ii = 1:8
     set(0, 'CurrentFigure', stage_traj_figs(ii))
     set(gcf, 'PaperPositionMode', 'auto');
