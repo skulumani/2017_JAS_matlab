@@ -176,6 +176,7 @@ for theta_ind = 1:length(theta)% loop over theta angles
     sol_output(theta_ind).costate_necc = costate_necc;
     sol_output(theta_ind).t = t;
     sol_output(theta_ind).x0 = x0;
+    sol_output(theta_ind).output;
     fprintf('Theta %5.4f \n',constants.theta_d);
 end % theta angle loop
 
