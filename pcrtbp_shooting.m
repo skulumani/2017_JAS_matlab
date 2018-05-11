@@ -5,7 +5,7 @@ function [sol_output]= pcrtbp_shooting(initial_condition, reach_time)
 % close all
 % clc
 % clear all
-
+tstart = tic;
 % constants and problem setup
 constants = crtbp_constants;
 constants.optfsolve = optimoptions(@fsolve,'Display','iter','TolFun',1e-4,'TolX',1e-4,...
@@ -177,6 +177,7 @@ for theta_ind = 1:length(theta)% loop over theta angles
     sol_output(theta_ind).t = t;
     sol_output(theta_ind).x0 = x0;
     sol_output(theta_ind).output;
+    sol_output(theta_ind).telapsed = toc(tstart);
     fprintf('Theta %5.4f \n',constants.theta_d);
 end % theta angle loop
 
