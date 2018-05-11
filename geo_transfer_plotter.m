@@ -166,6 +166,12 @@ control_all = [control_all;u];
 control_all = control_all * constants.a_scale * constants.sc_mass * constants.km2meter;
 time_all = [time_all;t+repmat(max_time,length(t),1)];
 
+% run and print some stats for the final transfer computation
+xc0 = [0.17541888429434552000; 0.00000000000000000003; -0.40753131851731217000; 1.71883588181152410000 ]; % geo final transfer working
+tspan = 0.355837553671024; % geo transfer final working
+xcf = [ 0.175319307882103 -0.000000000000020 -0.282163264918425 2.717676740320596]; % geo transfer final working
+[~, ~, ~] = pcrtbp_fixed_tf(xc0, xcf, tspan);
+
 set(0,'CurrentFigure',traj_fig);
 plot(state(:,1),state(:,2),'r')
 

@@ -44,7 +44,9 @@ constants.sub_opt = [cos(rand_theta); sin(rand_theta)];
 constants.xcf = xcf;
 
 hguess = [-0.0049;-0.0077;0.0007;-0.0060];
+tstart = tic;
 [h0,fval,exitflag,output] = fsolve(@(h0)obj(h0,tspan,constants),hguess,optfsolve);
+telapsed = toc(tstart);
 
 constants.control_switch = 'on';
 [t,state] = ode45(@(t,state)pcrtbp_ode(t,state,constants),constants.tspan,[xc0;h0],ode_options);
@@ -65,13 +67,20 @@ u = u';
 % plot(constants.xcf(1),constants.xcf(2),'ko')
 
 % quiver(pos(1:5:end,1),pos(1:5:end,2),u(1:5:end,1),u(1:5:end,2));
-J=1/2*(state(end,1:4)' - constants.xcf(1:4)')'*[eye(2,2) zeros(2,2);zeros(2,2) zeros(2,2)]*(state(end,1:4)' - constants.xcf(1:4)')
 
 % figure 
 % grid on
 % hold on
 % plot(t, u(:,1), t, u(:,2))
 % plot(t,hv(:,1),t, hv(:,2))
+
+J=1/2*(state(end,1:4)' - constants.xcf(1:4)')'*[eye(2,2) zeros(2,2);zeros(2,2) zeros(2,2)]*(state(end,1:4)' - constants.xcf(1:4)');
+
+fprintf('FSolve norm(f(x)) : %16.9e\n', norm(fval));
+fprintf("FSolve major iterations: %g\n", output.iterations);
+fprintf("FSolve First order optimality: %16.9e\n", output.firstorderopt);
+fprintf("Optimal Cost: %16.9e\n", J);
+fprintf("Execution time: %16.9e sec\n", telapsed);
 end
 
 function state_dot=pcrtbp_ode(t,state,constants)
