@@ -7,7 +7,7 @@ close all
 font_size = 22;
 font_name = 'Times';
 % load the reachable set
-load("./u=05/l1_reach_first.mat")
+load('./u=05/l1_reach_first.mat')
 
 constants = sol_output(1).constants;
 
@@ -139,8 +139,8 @@ hold all;
 grid on;
 plot(t_optimal, control_dim(:, 1), 'b', 'DisplayName', '$u_x$')
 plot(t_optimal, control_dim(:, 2), 'r', 'DisplayName', '$u_y$')
-xlabel("$t$ (nondim)", 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
-ylabel("$u$ (N)", 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+xlabel('$t$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel('$u$ (N)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
 c_legend = legend('show');
 
 set(c_legend, 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);

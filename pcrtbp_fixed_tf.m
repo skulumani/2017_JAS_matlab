@@ -77,10 +77,10 @@ u = u';
 J=1/2*(state(end,1:4)' - constants.xcf(1:4)')'*[eye(2,2) zeros(2,2);zeros(2,2) zeros(2,2)]*(state(end,1:4)' - constants.xcf(1:4)');
 
 fprintf('FSolve norm(f(x)) : %16.9e\n', norm(fval));
-fprintf("FSolve major iterations: %g\n", output.iterations);
-fprintf("FSolve First order optimality: %16.9e\n", output.firstorderopt);
-fprintf("Optimal Cost: %16.9e\n", J);
-fprintf("Execution time: %16.9e sec\n", telapsed);
+fprintf('FSolve major iterations: %g\n', output.iterations);
+fprintf('FSolve First order optimality: %16.9e\n', output.firstorderopt);
+fprintf('Optimal Cost: %16.9e\n', J);
+fprintf('Execution time: %16.9e sec\n', telapsed);
 end
 
 function state_dot=pcrtbp_ode(t,state,constants)
