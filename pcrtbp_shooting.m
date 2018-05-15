@@ -181,9 +181,7 @@ for theta_ind = 1:length(theta)% loop over theta angles
     fprintf('Theta %5.4f \n',constants.theta_d);
 end % theta angle loop
 
-keyboard
 plot_output(sol_output,constants)
-
 sol_output(1).constants = constants;
 % save('l1_reach_025','sol_output')
 end
@@ -526,12 +524,15 @@ end
 end
 
 function plot_output(sol_output,constants)
-poincare_fig = figure(2);
+traj_fig = figure();
+poincare_fig = figure();
 grid on 
 hold all
 
     for ii = 1:length(sol_output)
-%         plot_seg(sol_output(ii).t,sol_output(ii).x_i,sol_output(ii).h_i,sol_output(ii).xm,sol_output(ii).hm, sol_output(ii).x0, sol_output(ii).h0);
+        set(0, 'CurrentFigure', traj_fig)
+        plot_seg(sol_output(ii).t,sol_output(ii).x_i,sol_output(ii).h_i,sol_output(ii).xm,sol_output(ii).hm, sol_output(ii).x0, sol_output(ii).h0);
+        
         set(0,'CurrentFigure',poincare_fig);
         plot(sol_output(ii).x_i(end,1,end),sol_output(ii).x_i(end,3,end),'ro')
     end
