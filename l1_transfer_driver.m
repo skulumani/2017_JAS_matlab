@@ -131,6 +131,7 @@ xf_desired(4) = -ydot;
 % now perform an optimal control with fixed tf to the desired target on reacable set
 [t_optimal, state_optimal, control_optimal] = pcrtbp_fixed_tf(min_state(1, :)', xf_desired,min_time(end));
 
+
 % dimensionalize teh control
 control_dim = control_optimal * min_reach.constants.a_scale * min_reach.constants.km2meter * min_reach.constants.sc_mass;
 
@@ -159,4 +160,116 @@ title('Jacobi Energy', 'interpreter', 'latex', 'FontSize', font_size, 'FontName'
 xlabel('$t$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
 ylabel('$E$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
 
+%% now generate some examples for varying  the maximum bound of the control
+um_array = linspace(0.75*0.9, 0.75*1.10, 25);
+um_struct(size(um_array, 2)) = struct('t_optimal', [], 'state_optimal', [], 'control_optimal', [], 'jacobi', []);
 
+% loop over the various um
+for ii = 1:size(um_array,2)
+    [t_optimal, state_optimal, control_optimal] = pcrtbp_fixed_tf_varying_um(min_state(1, :)', xf_desired, min_time(end), um_array(ii));
+    um_struct(ii).t_optimal = t_optimal;
+    um_struct(ii).state_optimal = state_optimal;
+    um_struct(ii).control_optimal = control_optimal;
+    um_struct(ii).control_dim = control_optimal * min_reach.constants.a_scale * min_reach.constants.km2meter * min_reach.constants.sc_mass;
+    um_struct(ii).jacobi = energyconst(state_optimal(:, 1:4), min_reach.constants.mu);
+end
+
+% generate control plots and things
+traj_fig_um = figure();
+hold on;
+grid on;
+[t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 20],moon_x0,options_cross) ;
+plot_trajectories(t, state, energyconst(moon_x0',constants.mu), traj_fig_um, constants)
+title('Trajectory Varying $u_m$', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
+control_fig_um = figure();
+hold on;
+grid on;
+xlabel('$t$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel('$u$ (N)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+title('Control Input Varying $u_m$', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
+jacobi_fig_um = figure();
+hold on
+grid on
+title('Jacobi Energy Varying $u_m$', 'interpreter', 'latex', 'FontSize', font_size, 'FontName', font_name);
+xlabel('$t$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel('$E$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
+for ii = 1:size(um_array, 2)
+    set(0, 'CurrentFigure', traj_fig_um)
+    plot(um_struct(ii).state_optimal(:, 1), um_struct(ii).state_optimal(:, 2), 'g')
+
+    set(0, 'CurrentFigure', control_fig_um)
+    plot(um_struct(ii).t_optimal, um_struct(ii).control_dim(:, 1), 'b')
+    plot(um_struct(ii).t_optimal, um_struct(ii).control_dim(:, 2), 'r')
+
+    set(0, 'CurrentFigure', jacobi_fig_um)
+    plot(um_struct(ii).t_optimal, um_struct(ii).jacobi, 'b')
+end
+
+set(0, 'CurrentFigure', control_fig_um)
+c_um_legend = legend('$u_x$', '$u_y$');
+set(c_um_legend, 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+annotation('textarrow',[0.5, 0.6], [0.5, 0.6],'String','Increasing $u_m$', 'interpreter', 'latex', 'FontName', font_name)
+annotation('textarrow',[0.8, 0.9], [0.8, 0.9],'String','Increasing $u_m$', 'interpreter', 'latex', 'FontName', font_name)
+
+set(0, 'CurrentFigure', jacobi_fig_um)
+annotation('textarrow',[0.8, 0.9], [0.8, 0.9],'String','Increasing $u_m$', 'interpreter', 'latex', 'FontName', font_name)
+
+%% Vary the tf for the L1 transfer
+tf_array = linspace(min_time(end)*0.90, min_time(end)*1.10, 25);
+tf_struct(size(tf_array, 2)) = struct('t_optimal', [], 'state_optimal', [], 'control_optimal', [], 'jacobi', []);
+
+% loop over the various um
+for ii = 1:size(um_array,2)
+    [t_optimal, state_optimal, control_optimal] = pcrtbp_fixed_tf_varying_um(min_state(1, :)', xf_desired, tf_array(ii), 0.75);
+    tf_struct(ii).t_optimal = t_optimal;
+    tf_struct(ii).state_optimal = state_optimal;
+    tf_struct(ii).control_optimal = control_optimal;
+    tf_struct(ii).control_dim = control_optimal * min_reach.constants.a_scale * min_reach.constants.km2meter * min_reach.constants.sc_mass;
+    tf_struct(ii).jacobi = energyconst(state_optimal(:, 1:4), min_reach.constants.mu);
+end
+
+% generate control plots and things
+traj_fig_tf = figure();
+hold on;
+grid on;
+[t,state,cross_t,cross_state,ie] = ode113(@(t,state)pcrtbp_ode(t,state,constants.mu),[0 20],moon_x0,options_cross) ;
+plot_trajectories(t, state, energyconst(moon_x0',constants.mu), traj_fig_tf, constants)
+title('Trajectory Varying $t_f$', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
+control_fig_tf = figure();
+hold on;
+grid on;
+xlabel('$t$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel('$u$ (N)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+title('Control Input Varying $t_f$', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
+jacobi_fig_tf = figure();
+hold on
+grid on
+title('Jacobi Energy Varying $t_f$', 'interpreter', 'latex', 'FontSize', font_size, 'FontName', font_name);
+xlabel('$t$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel('$E$ (nondim)', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+
+for ii = 1:size(tf_array, 2)
+    set(0, 'CurrentFigure', traj_fig_tf)
+    plot(tf_struct(ii).state_optimal(:, 1), tf_struct(ii).state_optimal(:, 2), 'g');
+
+    set(0, 'CurrentFigure', control_fig_tf)
+    plot(tf_struct(ii).t_optimal, tf_struct(ii).control_dim(:, 1), 'b')
+    plot(tf_struct(ii).t_optimal, tf_struct(ii).control_dim(:, 2), 'r')
+
+    set(0, 'CurrentFigure', jacobi_fig_tf)
+    plot(tf_struct(ii).t_optimal, tf_struct(ii).jacobi, 'b')
+end
+
+set(0, 'CurrentFigure', control_fig_tf)
+c_tf_legend = legend('$u_x$', '$u_y$');
+set(c_tf_legend, 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+annotation('textarrow',[0.5, 0.6], [0.5, 0.6],'String','Increasing $u_m$', 'interpreter', 'latex', 'FontName', font_name)
+annotation('textarrow',[0.8, 0.9], [0.8, 0.9],'String','Increasing $u_m$', 'interpreter', 'latex', 'FontName', font_name)
+
+set(0, 'CurrentFigure', jacobi_fig_tf)
+annotation('textarrow',[0.8, 0.9], [0.8, 0.9],'String','Increasing $u_m$', 'interpreter', 'latex', 'FontName', font_name)
