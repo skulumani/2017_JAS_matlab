@@ -1,24 +1,24 @@
 % 8 July 2015
 % Multiple shooting for PCRTBP Variational problem. Really hope this works
 % finally
-function [sol_output]= pcrtbp_shooting(initial_condition, reach_time)
+function [sol_output]= pcrtbp_shooting(initial_condition, reach_time, um)
 % close all
 % clc
 % clear all
 tstart = tic;
 % constants and problem setup
 constants = crtbp_constants;
-constants.optfsolve = optimoptions(@fsolve,'Display','final','TolFun',1e-4,'TolX',1e-4,...
-    'MaxIter',5000,'MaxFunEvals',5000, 'Algorithm', 'trust-region-dogleg','Jacobian','off',...
+constants.optfsolve = optimoptions(@fsolve,'Display','final','TolFun',1e-6,'TolX',1e-6,...
+     'Algorithm', 'trust-region-reflective','Jacobian','off',...
     'DerivativeCheck','off');
-constants.um = 0.75;
+constants.um = um;
 
-num_steps = 1000;
+num_steps = 400;
 constants.num_steps = num_steps;
 
-% [L_points, ~] = libration_points(constants.mu);
-% constants.center_vec = L_points(1,:);
-constants.center_vec = [-constants.mu 0]; % centered at the Earth
+[L_points, ~] = libration_points(constants.mu);
+constants.center_vec = L_points(1,:);
+% constants.center_vec = [-constants.mu 0]; % centered at the Earth
 
 constants.alpha_d = 0*pi/180 ; % angle that defines the poincare section
 
@@ -35,13 +35,16 @@ h0_i = 0.1*ones(1,4);
 
 % generate initial guess of state and costate histories
 % from periodic orbit
-h01 = [   0.032389612643357;...
-   0.010508161299126;...
-   0.000547425479709;...
-   0.001064218889245]; 
+% h01 = [   0.032389612643357;...
+   % 0.010508161299126;...
+   % 0.000547425479709;...
+   % 0.001064218889245]; 
 
-beta1 = [   1.256812564325579;...
-  -0.503978575859051];
+% beta1 = [   1.256812564325579;...
+  % -0.503978575859051];
+
+h01 = [ -0.001631783953841,  -0.002770925976607,   0.000277459746520, -0.002092492482779]';
+beta1 = [ -0.001047716506691  -0.505982795705680]';
 
 num_con = 2;
 constants.num_con = num_con;
@@ -51,7 +54,7 @@ constants.control_switch = 'off';
 tf = T_i;
 
 % generate the sub intervals and a guess of trajectories
-num_seg = 2; % should be cleanly divisble by the number of steps
+num_seg = 4; % should be cleanly divisble by the number of steps
 t = zeros(num_seg, num_steps/num_seg);
 x_i = zeros(num_steps/num_seg,4,num_seg);
 h_i = zeros(num_steps/num_seg,4,num_seg);
@@ -89,6 +92,8 @@ constants.xcf = state_i(end,1:4)';
 % max_iter = 50;
 
 x0 = x0_i;
+h0 = h01;
+beta = beta1;
 
 % all the interior patch points for the multiple shooting
 xm = squeeze(x_i(end,:,1:end-1));
@@ -100,7 +105,7 @@ hm = reshape(hm,num_states,num_seg-1);
 %% loop over theta
 % solution array
 
-theta =linspace(0,360,180)*pi/180;
+theta =linspace(0,360,360)*pi/180;
 
 constants.control_switch = 'on';
 sol_output(length(theta)) = struct('theta',[],'xg_sol',[], 'fval',[],'exitflag',[],...
@@ -109,7 +114,7 @@ sol_output(length(theta)) = struct('theta',[],'xg_sol',[], 'fval',[],'exitflag',
 
 
 for theta_ind = 1:length(theta)% loop over theta angles
- constants.theta_d = theta(theta_ind);
+    constants.theta_d = theta(theta_ind);
     % loop or fsolve
     
     % form the xg guess vector
@@ -121,31 +126,14 @@ for theta_ind = 1:length(theta)% loop over theta angles
         
         xg(srow_idx:erow_idx8) = [xm(:,mid);hm(:,mid)];
     end
-    xg(1:num_states) = h01;
-    xg(length(xg)-num_con+1:end) = beta1;
-    % iterate to solve for xg
-    % test the jacobian
-%     jacobian_test(xg,Q, x0,constants)
-%     % newton iteration loop here
-%     iter = 1;
-%     g = 1;
-%     while norm(g) > 1e-3 && iter < 100
-%         % calculate g, dgdx and use a newton iteration to solve
-%         
-%         [g, dgdx] = objective(xg, Q, x0, constants);
-%         
-%         del = -0.5 * (dgdx \ g);
-%         xg = xg + del;
-%         clc
-%         fprintf('del norm %5.4f\n',norm(del));
-%         fprintf('g norm %5.4f\n',norm(g));
-%         iter = iter + 1;
-%     end
+    xg(1:num_states) = h0;
+    xg(length(xg)-num_con+1:end) = beta;
 
     [xg,fval,exitflag,output] = fsolve(@(xg)objective(xg,Q, x0, constants),xg,constants.optfsolve);
     
     [x_i, h_i, xm, hm, h0, beta] = prop_seg(xg,x0,constants);
-    %     plot_seg(t,x_i,h_i,xm,hm, x0, h0);
+%     plot_seg(t,x_i,h_i,xm,hm, x0, h0);
+%     keyboard
     
     % calculate all the minus states
     xminus = squeeze(x_i(end,:,:));
@@ -181,7 +169,7 @@ for theta_ind = 1:length(theta)% loop over theta angles
     fprintf('Theta %5.4f \n',constants.theta_d);
 end % theta angle loop
 
-plot_output(sol_output,constants)
+% plot_output(sol_output,constants)
 sol_output(1).constants = constants;
 % save('l1_reach_025','sol_output')
 end
