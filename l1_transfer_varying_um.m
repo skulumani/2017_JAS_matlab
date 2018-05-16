@@ -10,7 +10,7 @@ marker = ['o', '+', '*', 'x', 's'];
 
 initial_condition = [  0.815614054266804, 0, 0, 0.192227407664904];
 reach_time = 1.307478324303006;
-
+reach_time_array = 1.307478324303006 * [0.95, 1.0, 1.05, 1.1];
 %% um change
 for ii = 1:size(um_array,2)
     sol_output = pcrtbp_shooting(initial_condition, reach_time, um_array(1));
@@ -18,11 +18,11 @@ for ii = 1:size(um_array,2)
 end
 
 %% now loop over different terminal times
-reach_time_array = 1.307478324303006 * [0.9, 0.95, 1.0, 1.05, 1.1];
+
 
 for ii = 1:size(reach_time_array, 2)
-    sol_output = pcrtbp_shooting(initial_condition, reach_time_array(ii), 0.05);
-    save(['./data/l1_varying_tf/l1_reach_', num2str(reach_time_array(ii)), '.mat'], 'sol_output');
+    sol_output = pcrtbp_shooting(initial_condition, reach_time_array(ii), 0.5);
+    save(['./data/l1_varying_tf_um_5/l1_reach_', num2str(reach_time_array(ii)), '.mat'], 'sol_output');
 end
 
 fprintf('Done with tf loop\n')
