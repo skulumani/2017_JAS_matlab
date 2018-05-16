@@ -11,20 +11,21 @@ marker = ['o', '+', '*', 'x', 's'];
 initial_condition = [  0.815614054266804, 0, 0, 0.192227407664904];
 reach_time = 1.307478324303006;
 
+%% um change
 for ii = 1:size(um_array,2)
     sol_output = pcrtbp_shooting(initial_condition, reach_time, um_array(1));
     save(['./data/l1_varying_um/l1_reach_', num2str(um_array(ii)), '.mat'], 'sol_output');
 end
 
 %% now loop over different terminal times
-reach_time_array = reach_time * [0.85, 0.9, 0.95, 1.0, 1.05, 1.1];
+reach_time_array = 1.307478324303006 * [0.9, 0.95, 1.0, 1.05, 1.1];
 
 for ii = 1:size(reach_time_array, 2)
-    sol_output = pcrtbp_shooting(initial_condition, reach_time_array(ii), 0.5);
+    sol_output = pcrtbp_shooting(initial_condition, reach_time_array(ii), 0.05);
     save(['./data/l1_varying_tf/l1_reach_', num2str(reach_time_array(ii)), '.mat'], 'sol_output');
 end
 
-fprintf('Done with tf loop')
+fprintf('Done with tf loop\n')
 
 %% plots the reachable set for varying um
 close all
