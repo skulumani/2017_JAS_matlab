@@ -1,53 +1,51 @@
-%% vary the maximum control to see effect on reachability set
+% Generate plots from the various L1 reachability sets
 
 clear all
 close all
 clc
 
-um_array = [0.5, 0.6, 0.7, 0.8, 0.9];
-color = ['r', 'g', 'b', 'y', 'm'];
-marker = ['o', '+', '*', 'x', 's'];
+
+color = ['r', 'g', 'b', 'y'];
+marker = ['o', 's', '+'];
 
 initial_condition = [  0.815614054266804, 0, 0, 0.192227407664904];
 reach_time = 1.307478324303006;
 reach_time_array = 1.307478324303006 * [0.95, 1.0, 1.05, 1.1];
-%% um change
-for ii = 1:size(um_array,2)
-    sol_output = pcrtbp_shooting(initial_condition, reach_time, um_array(1));
-    save(['./data/l1_varying_um/l1_reach_', num2str(um_array(ii)), '.mat'], 'sol_output');
-end
 
-%% now loop over different terminal times
-
-
-for ii = 1:size(reach_time_array, 2)
-    sol_output = pcrtbp_shooting(initial_condition, reach_time_array(ii), 0.5);
-    save(['./data/l1_varying_tf_um_5/l1_reach_', num2str(reach_time_array(ii)), '.mat'], 'sol_output');
-end
-
-fprintf('Done with tf loop\n')
-
-%% plots the reachable set for varying um
-close all
-clc
+font_size = 22;
+font_name = 'Times';
 
 traj_fig = figure(1);
 hold all;
 grid on;
+annotation('textarrow',[0.5, 0.6], [0.5, 0.6],'String','Increasing $u_m$', 'interpreter', 'latex', 'FontName', font_name)
 
 poincare_fig = figure(2);
 hold all
 grid on
-xlabel('x axis', 'interpreter', 'latex')
-ylabel('$\dot{x}$', 'interpreter', 'latex')
-title('Poincare', 'interpreter', 'latex')
-keyboard
+xlabel('$x$', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+ylabel('$\dot{x}$', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+title('Poincare Section', 'interpreter', 'latex', 'FontUnits', 'points', 'FontSize', font_size, 'FontName', font_name);
+annotation('textarrow',[0.5, 0.6], [0.5, 0.6],'String','Increasing $u_m$', 'interpreter', 'latex', 'FontName', font_name)
+
+% keyboard
+
 % plot all the reachable set on the Poincare section
-for ii = 1:size(um_array, 2)
-    load(['./data/l1_varying_um/l1_reach_', num2str(um_array(ii)), '.mat']);
-    plot_sol_output_um(sol_output, traj_fig, poincare_fig, color(ii), marker(ii))
-    clear sol_output
+for ii = 1:size(reach_time_array, 2)
+    load(['./data/l1_varying_tf_um_05/l1_reach_', num2str(reach_time_array(ii)), '.mat']);
+    plot_sol_output_tf(sol_output, traj_fig, poincare_fig, color(ii), marker(1))
 end
+
+for ii = 1:size(reach_time_array, 2)
+    load(['./data/l1_varying_tf_um_25/l1_reach_', num2str(reach_time_array(ii)), '.mat']);
+    plot_sol_output_tf(sol_output, traj_fig, poincare_fig, color(ii), marker(2))
+end
+
+for ii = 1:size(reach_time_array, 2)
+    load(['./data/l1_varying_tf_um_5/l1_reach_', num2str(reach_time_array(ii)), '.mat']);
+    plot_sol_output_tf(sol_output, traj_fig, poincare_fig, color(ii), marker(3))
+end
+
 constants = sol_output(1).constants;
 % generate the bounded moon orbit
 moon_x0 = [1.05;0;0;0.35];
@@ -59,12 +57,7 @@ plot_trajectories(t, state, energyconst(moon_x0',constants.mu), traj_fig, consta
 set(0,'CurrentFigure',poincare_fig);
 plot(cross_state(:,1),cross_state(:,3),'b.')
 
-%% plots the reachable set for varying tf
-close all
-clc
-
-
-function plot_sol_output_um(sol_output, traj_fig, poincare_fig, color, marker)
+function plot_sol_output_tf(sol_output, traj_fig, poincare_fig, color, marker)
 % parse out the states from the sol_output
 num_steps = sol_output(1).constants.num_steps;
 num_seg = sol_output(1).constants.num_seg;
@@ -91,7 +84,7 @@ for ii = 1:num_theta % loop over theta angles (poincare directions)
     reach_struct(ii).reach_end = [state(end,:) costate(end,:)];
     % plot the trajectories on the same plot of the moon periodic orbit
     set(0,'CurrentFigure',traj_fig);
-    plot(state(:,1),state(:,2),'Color', color, 'Marker', marker)
+    plot(state(1:10:end,1),state(1:10:end,2),'Color', color, 'Marker', marker)
     set(0,'CurrentFigure',poincare_fig);
     plot(state(end,1),state(end,3),'Color', color, 'Marker', marker)
     

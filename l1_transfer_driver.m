@@ -21,7 +21,7 @@ hold all
 grid on
 xlabel('x axis', 'interpreter', 'latex')
 ylabel('$\dot{x}$', 'interpreter', 'latex')
-title('Poincare', 'interpreter', 'latex')
+title('Poincare Section', 'interpreter', 'latex')
 
 % parse out the states from the sol_output
 num_steps = sol_output(1).constants.num_steps;
